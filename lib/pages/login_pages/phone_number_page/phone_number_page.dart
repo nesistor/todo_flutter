@@ -28,6 +28,12 @@ class _WelcomePageState extends State<PhoneNumberPage> {
 
   @override
   Widget build(BuildContext context) {
+    phoneController.selection = TextSelection.fromPosition(
+      TextPosition(
+        offset: phoneController.text.length,
+      ),
+    );
+
     return Scaffold(
         body: Stack(children: [
       ImageFiltered(
@@ -48,7 +54,7 @@ class _WelcomePageState extends State<PhoneNumberPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 88.0),
+                    const SizedBox(height: 80.0),
                     Text(AppLocalizations.of(context)!.register,
                         style: const TextStyle(
                             fontSize: 40.0,
@@ -61,19 +67,17 @@ class _WelcomePageState extends State<PhoneNumberPage> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 33.0),
-                    TextFormField(
-
-                        cursorColor: Colors.white,
-                        keyboardType: TextInputType.phone,
-                        controller: phoneController,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                        onChanged: (value) {
-                          setState(() {
-                            phoneController.text = value;
-                          });
-                        },
-                        decoration: InputDecoration(
+                    Container(
+                      padding: const EdgeInsets.all(12.5),
+                      child: TextFormField(
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.phone,
+                          controller: phoneController,
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                          decoration: InputDecoration(
                             hintText: "Enter phone number",
                             hintStyle: const TextStyle(
                                 color: Colors.white,
@@ -87,7 +91,7 @@ class _WelcomePageState extends State<PhoneNumberPage> {
                               borderSide: const BorderSide(color: Colors.white),
                             ),
                             prefixIcon: Container(
-                                padding: const EdgeInsets.all(13.0),
+                                padding: const EdgeInsets.all(12.5),
                                 child: InkWell(
                                     onTap: () {
                                       showCountryPicker(
@@ -106,7 +110,22 @@ class _WelcomePageState extends State<PhoneNumberPage> {
                                         style: const TextStyle(
                                             fontSize: 18,
                                             color: Colors.white,
-                                            fontWeight: FontWeight.bold)))))),
+                                            fontWeight: FontWeight.bold)))),
+                            suffixIcon: phoneController.text.length >= 9
+                                ? Container(
+                                    padding: const EdgeInsets.all(12.5),
+                                    child: Container(
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.green),
+                                        child: const Icon(
+                                          Icons.done,
+                                          color: Colors.white,
+                                          size: 20,
+                                        )))
+                                : null,
+                          )),
+                    ),
                     const SizedBox(height: 33.0),
                     SizedBox(
                         width: double.infinity,
