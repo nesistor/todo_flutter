@@ -1,4 +1,9 @@
 {
-    "login": "Login:",
-    "addTask": "Add task"
+    "login": "Login",
+    "addTask": "Add task",
+    "getStarted": "Get started",
+    "letsGetStarted": "Let's get started",
+    "neverABetterTime": "Never a better time than now to start",
+    "register": "Register",
+    "addYourPhoneNumber": "Add your phone number. We will send you a verification code"
 }

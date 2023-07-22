@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
-import 'package:todo_flutter/pages/main_page/main_page.dart';
+import 'package:todo_flutter/pages/welcome_page/welcome_page.dart';
 import 'package:todo_flutter/theme_data.dart';
 
 void main() {
@@ -16,9 +15,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: todoThemeData,
-      home: const MainPage(),
+      home: WelcomePage(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
     );
   }

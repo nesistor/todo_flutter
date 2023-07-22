@@ -1,4 +1,9 @@
 {
     "login": "Zaloguj",
-    "addTask": "Dodaj zadanie"
+    "addTask": "Dodaj zadanie",
+    "getStared": "Rozpocznij",
+    "letsGetStarted": "Zacznijmy",
+    "neverABetterTime": "Jeżeli nie teraz to nigdy",
+    "register": "Zarejestrój",
+    "addYourPhoneNumber": "Dodaj swój numer telefonu. Wyślemy Ci kod weryfikacyjny"
 }
