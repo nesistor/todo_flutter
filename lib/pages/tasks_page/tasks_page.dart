@@ -74,10 +74,10 @@ class _TasksPageState extends State<TasksPage> {
           ),
           Expanded(
             child: Container(
-              color: Colors.blue, // Grey background color
+              color: Color.fromRGBO(25,25,25, 0.8), // Grey background color
               child: Center(
                 child: Text(
-                  'Rest of the screen content',
+                  'Add your tasks',
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),

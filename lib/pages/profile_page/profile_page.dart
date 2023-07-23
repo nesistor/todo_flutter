@@ -27,7 +27,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  color: Colors.black,
+                  color: Color.fromRGBO(25,25,25, 0.8),
                   height: 400, // Adjust the height of the black screen as needed
                 ),
               ],
