@@ -6,5 +6,10 @@
     "neverABetterTime": "Never a better time than now to start",
     "register": "Register",
     "addYourPhoneNumber": "Add your phone number. We will send you a verification code",
-    "enterPhoneNumber": "Enter phone number"
+    "enterPhoneNumber": "Enter phone number",
+    "verification": "Verification",
+    "enterTheOTP": "Enter the OTP send to your phone number",
+    "verify": "Verify",
+    "didntReceiveAnyCode": "Didn't receive any code?",
+    "resendNewCode": "Resend new code"
 }

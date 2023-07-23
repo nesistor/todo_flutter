@@ -6,5 +6,10 @@
     "neverABetterTime": "Jeżeli nie teraz to nigdy",
     "register": "Zarejestrój",
     "addYourPhoneNumber": "Dodaj swój numer telefonu. Wyślemy Ci kod weryfikacyjny",
-    "enterPhoneNumber": "Wprowadź numer telefonu"
+    "enterPhoneNumber": "Wprowadź numer telefonu",
+    "verification": "Weryfikacja",
+    "enterTheOTP": "Wprowadź jednorazowe hasło wysłane na twój numer telefonu",
+    "verify": "Zweryfikuj",
+    "didntReciveAnyCode": "Nie otrzymałeś kodu?",
+    "resendNewCode": "Wyślij nowy kod"
 }

@@ -131,7 +131,12 @@ class _WelcomePageState extends State<PhoneNumberPage> {
                         width: double.infinity,
                         height: 50,
                         child: CustomButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SmsCodePage()));
+                          },
                           text: AppLocalizations.of(context)!.login,
                         ))
                   ])))
