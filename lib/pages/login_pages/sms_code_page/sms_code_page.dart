@@ -7,6 +7,9 @@ import 'package:todo_flutter/pages/welcome_page/page_widgets/custom_button.dart'
 import 'package:todo_flutter/pages/login_pages/sms_code_page/page_widgets/digit_field.dart';
 
 class SmsCodePage extends StatefulWidget {
+  final String verificationId;
+  const SmsCodePage({super.key, required this.verificationId});
+
   @override
   State<SmsCodePage> createState() => _WelcomePageState();
 }

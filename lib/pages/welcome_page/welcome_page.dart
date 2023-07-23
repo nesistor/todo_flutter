@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'dart:ui';
 
 import 'package:todo_flutter/pages/welcome_page/page_widgets/custom_button.dart';
 import 'package:todo_flutter/pages/login_pages/phone_number_page/phone_number_page.dart';
+import 'package:todo_flutter/pages/main_page/main_page.dart';
+
+import '../../provider/auth_provider.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -13,6 +17,8 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
         body: Stack(children: [
       ImageFiltered(
@@ -48,7 +54,9 @@ class _WelcomePageState extends State<WelcomePage> {
                         height: 50,
                         child: CustomButton(
                           onPressed: () {
-                            Navigator.push(
+                            authProvider.isSignedIn == true //when true then fetch shared preference data
+                                ? Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()))
+                                : Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PhoneNumberPage()));

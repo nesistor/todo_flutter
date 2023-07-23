@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:ui';
 import 'package:country_picker/country_picker.dart';
+import 'package:provider/provider.dart';
 
 import 'package:todo_flutter/pages/welcome_page/page_widgets/custom_button.dart';
 import 'package:todo_flutter/pages/login_pages/sms_code_page/sms_code_page.dart';
+import 'package:todo_flutter/provider/auth_provider.dart';
 
 class PhoneNumberPage extends StatefulWidget {
   @override
@@ -131,15 +133,16 @@ class _WelcomePageState extends State<PhoneNumberPage> {
                         width: double.infinity,
                         height: 50,
                         child: CustomButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SmsCodePage()));
-                          },
+                          onPressed: () => sendPhoneNumber(),
                           text: AppLocalizations.of(context)!.login,
                         ))
                   ])))
     ]));
+  }
+  void sendPhoneNumber() {
+    //+48123456789
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    String phoneNumber = phoneController.text.trim();
+    authProvider.signInWithPhone(context, "+${selectedCountry.phoneCode}$phoneNumber" );
   }
 }
