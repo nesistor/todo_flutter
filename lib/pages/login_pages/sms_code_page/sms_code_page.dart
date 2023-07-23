@@ -34,6 +34,16 @@ class _WelcomePageState extends State<SmsCodePage> {
           height: double.infinity,
         ),
       ),
+      Padding(
+        padding: const EdgeInsets.only(top: 40.0, left: 25.0), // Add top padding here
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(Icons.arrow_back, color: Colors.white),
+          ),
+        ),
+      ),
       Center(
           child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
