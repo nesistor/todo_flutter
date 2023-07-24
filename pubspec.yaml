@@ -42,6 +42,9 @@ dependencies:
   firebase_auth: ^4.7.1
   curved_navigation_bar: ^1.0.3
   provider: ^6.0.5
+  pinput: ^2.2.31
+  firebase_storage: ^11.2.5
+  cloud_firestore: ^4.8.3
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +74,8 @@ flutter:
     - assets/background/login_background.png
     - assets/avatars/ai.png
     - assets/background/oceanlab_7.png
+    - assets/background/login_background_new1.png
+    - assets/background/login_background_new2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -98,8 +103,8 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 flutter_native_splash:
-  background_image: assets/background/login_background.png
-  background_image_dark: assets/background/login_background.png
+  background_image: assets/background/login_background_new2.png
+  background_image_dark: assets/background/login_background_new2.png
   android_12:
-    image: assets/background/login_background.png
+    image: assets/background/login_background_new2.png
   fill: true

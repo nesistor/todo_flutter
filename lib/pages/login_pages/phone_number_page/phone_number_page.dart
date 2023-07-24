@@ -41,7 +41,7 @@ class _WelcomePageState extends State<PhoneNumberPage> {
       ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
         child: Image.asset(
-          'assets/background/login_background.png',
+          'assets/background/login_background_new2.png',
           color: Colors.white.withOpacity(0.8),
           colorBlendMode: BlendMode.modulate,
           fit: BoxFit.cover,
