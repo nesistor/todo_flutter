@@ -1,15 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_flutter/custom_widgets/toast_bar.dart';
-import 'package:todo_flutter/pages/main_page/main_page.dart';
-import 'dart:ui';
 import 'package:pinput/pinput.dart';
+import 'package:todo_flutter/provider/auth_provider.dart';
 
 import 'package:todo_flutter/pages/welcome_page/page_widgets/custom_button.dart';
-import 'package:todo_flutter/pages/login_pages/sms_code_page/page_widgets/digit_field.dart';
-import 'package:todo_flutter/provider/auth_provider.dart';
-import 'package:todo_flutter/pages/profile_page/profile_page.dart';
+import 'package:todo_flutter/pages/user_information_page/user_information_page.dart';
 
 class SmsCodePage extends StatefulWidget {
   final String verificationId;
@@ -118,11 +117,14 @@ class _WelcomePageState extends State<SmsCodePage> {
                           fontWeight: FontWeight.bold,
                           color: Colors.white)),
                   const SizedBox(height: 10.0),
-                  Text(AppLocalizations.of(context)!.resendNewCode,
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A237E))),
+                  Text(
+                    AppLocalizations.of(context)!.resendNewCode,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1A237E),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -141,9 +143,10 @@ class _WelcomePageState extends State<SmsCodePage> {
       onSuccess: () {
         authProvider.checkExistingUser().then((value) async {
           if (value == true) {
-
           } else {
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => ProfilePage()),
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => UserInformationPage()),
                 (route) => false);
           }
         });

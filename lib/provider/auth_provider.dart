@@ -1,9 +1,17 @@
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_flutter/custom_widgets/toast_bar.dart';
 import 'package:todo_flutter/pages/login_pages/sms_code_page/sms_code_page.dart';
+
+import 'package:todo_flutter/model/user_model.dart';
+
+import 'package:todo_flutter/utils/utils.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool _isSignedIn = false;
@@ -12,9 +20,12 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? _uid;
   String get uid => _uid!;
+  UserModel? _userModel;
+  UserModel get userModel => _userModel!;
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   AuthProvider() {
     checkSignedIn();
@@ -25,6 +36,13 @@ class AuthProvider extends ChangeNotifier {
     _isSignedIn = s.getBool("is_signed_in") ?? false;
     notifyListeners();
   }
+  Future setSignIn() async {
+    final SharedPreferences s = await SharedPreferences.getInstance();
+    s.setBool("is_signed_in", true);
+    _isSignedIn = true;
+    notifyListeners();
+  }
+
 
   // sign In
   void signInWithPhone(BuildContext context, String phoneNumber) async {
@@ -82,9 +100,11 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  Future<bool> checkExistingUser() async{
+
+  // check if user exists
+  Future<bool> checkExistingUser() async {
     DocumentSnapshot snapshot =
-      await _firebaseFirestore.collection("users").doc(_uid).get();
+        await _firebaseFirestore.collection("users").doc(_uid).get();
     if (snapshot.exists) {
       print("USER EXIST");
       return true;
@@ -93,4 +113,70 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  void saveUserDataToFirebase({
+    required BuildContext context,
+    required UserModel userModel,
+    required File profilePic,
+    required Function onSucces,
+  }) async {
+    _isLoading == true;
+    notifyListeners();
+    try {
+      // uploading image to firebase storage.
+      await storeFileToStorage("profilePic/$_uid", profilePic).then((value) {
+        userModel.profilePic = value;
+        userModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        userModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        userModel.uid = _firebaseAuth.currentUser!.uid;
+      });
+      _userModel = userModel;
+
+      // uploading to databse
+      await _firebaseFirestore
+          .collection("users")
+          .doc(_uid)
+          .set(userModel.toMap())
+          .then((value) {
+        onSucces();
+        _isLoading = false;
+        notifyListeners();
+      });
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(context, e.message.toString());
+      _isLoading == false;
+      notifyListeners();
+    }
+  }
+
+  Future<String> storeFileToStorage(String ref, File file) async {
+    UploadTask uploadTask = _firebaseStorage.ref().child(ref).putFile(file);
+    await uploadTask;
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  // STORING DATA LOCALLY
+  Future saveUserDataToSP() async {
+    SharedPreferences s = await SharedPreferences.getInstance();
+    await s.setString("user_model", jsonEncode(userModel.toMap()));
+  }
+
+  Future getDataFromSP() async {
+    SharedPreferences s = await SharedPreferences.getInstance();
+    String data = s.getString("user_model") ?? '';
+    _userModel = UserModel.fromMap(jsonDecode(data));
+    _uid = _userModel!.uid;
+    notifyListeners();
+  }
+
+  Future userSignOut() async {
+    SharedPreferences s = await SharedPreferences.getInstance();
+    await _firebaseAuth.signOut();
+    _isSignedIn = false;
+    notifyListeners();
+    s.clear();
+  }
+
 }
