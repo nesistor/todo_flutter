@@ -50,16 +50,15 @@ class _UserInformationPageState extends State<UserInformationPage> {
                 padding: const EdgeInsets.symmetric(
                     vertical: 25.0, horizontal: 25.0),
                 child: Container(
-                  color: Colors.black,
                   child: Center(
                     child: Column(
                       children: [
-                        SizedBox(height: 33),
+                        const SizedBox(height: 33),
                         InkWell(
                           onTap: () => selectImage(),
                           child: image == null
                               ? const CircleAvatar(
-                                  backgroundColor: const Color(0xFF1A237E),
+                                  backgroundColor: Color(0xFF1A237E),
                                   radius: 50,
                                   child: Icon(Icons.account_circle,
                                       size: 50, color: Colors.white),
@@ -97,7 +96,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 33),
                         SizedBox(
                           height: 50.0,
                           width: MediaQuery.of(context).size.width,
@@ -130,10 +129,10 @@ class _UserInformationPageState extends State<UserInformationPage> {
           maxLines: maxLines,
           decoration: InputDecoration(
             prefixIcon: Container(
-              margin: EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Color(0xFF1A237E),
+                color: const Color(0xFF1A237E),
               ),
               child: Icon(
                 icon,
@@ -187,7 +186,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
         },
       );
     } else {
-      toastBar(context, "Please upload your profile photo");
+      showSnackBar(context, "Please upload your profile photo");
     }
   }
 }
