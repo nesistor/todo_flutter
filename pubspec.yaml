@@ -47,6 +47,7 @@ dependencies:
   cloud_firestore: ^4.0.2
   image_picker: ^1.0.1
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -57,6 +58,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_app_name: ^0.1.0
+
+dependency_overrides:
+  xml: ^6.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -77,6 +83,7 @@ flutter:
     - assets/background/oceanlab_7.png
     - assets/background/login_background_new1.png
     - assets/background/login_background_new2.png
+    - assets/launcher_icon/cellyfish_icon2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -109,3 +116,12 @@ flutter_native_splash:
   android_12:
     image: assets/background/login_background_new2.png
   fill: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/launcher_icon/cellyfish_icon2.png"
+  min_sdk_android: 21
+
+flutter_app_name:
+  name: "ASI"
