@@ -12,27 +12,17 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _page = 0;
-  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
-  bool _isAddWidgetOpen = false;
-  TextEditingController _textEditingController = TextEditingController();
 
-  @override
-  void dispose() {
-    _textEditingController.dispose();
-    super.dispose();
-  }
+  final List<Widget> _pages = [
+    SearchPage(),
+    TasksPage(),
+    ProfilePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> pages = [
-      SearchPage(),
-      TasksPage(),
-      ProfilePage(),
-    ];
-
     return Scaffold(
       bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
         height: 55.0,
         items: <Widget>[
           Icon(Icons.search, size: 30, color: Colors.white),
@@ -46,9 +36,9 @@ class _MainPageState extends State<MainPage> {
         animationDuration: Duration(milliseconds: 300),
         onTap: (index) {
           if (index == 1) {
-            // Handle "Add" icon tap
+            // Navigate to the TasksPage by changing the page index
             setState(() {
-              _isAddWidgetOpen = true;
+              _page = 1;
             });
           } else {
             setState(() {
@@ -57,44 +47,11 @@ class _MainPageState extends State<MainPage> {
           }
         },
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: pages[_page],
-          ),
-          if (_isAddWidgetOpen)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: () {
-                  // Close "Add" widget when tapping outside of it
-                  setState(() {
-                    _isAddWidgetOpen = false;
-                  });
-                },
-                child: Container(
-                  color: Colors.black.withOpacity(0.5), // You can set your desired color and opacity
-                ),
-              ),
-            ),
-          if (_isAddWidgetOpen)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                color: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-                child: TextField(
-                  controller: _textEditingController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your text...',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-            ),
-        ],
+      body: IndexedStack(
+        index: _page,
+        children: _pages,
       ),
     );
   }
 }
+

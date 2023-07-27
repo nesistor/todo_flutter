@@ -36,13 +36,13 @@ class AuthProvider extends ChangeNotifier {
     _isSignedIn = s.getBool("is_signed_in") ?? false;
     notifyListeners();
   }
+
   Future setSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     s.setBool("is_signed_in", true);
     _isSignedIn = true;
     notifyListeners();
   }
-
 
   // sign In
   void signInWithPhone(BuildContext context, String phoneNumber) async {
@@ -151,10 +151,28 @@ class AuthProvider extends ChangeNotifier {
 
   Future<String> storeFileToStorage(String ref, File file) async {
     UploadTask uploadTask = _firebaseStorage.ref().child(ref).putFile(file);
-    await uploadTask;
     TaskSnapshot snapshot = await uploadTask;
     String downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
+  }
+
+  Future getDataFromFirestore() async {
+    await _firebaseFirestore
+        .collection("users")
+        .doc(_firebaseAuth.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+      _userModel = UserModel(
+        name: snapshot['name'],
+        email: snapshot['email'],
+        createdAt: snapshot['createdAt'],
+        bio: snapshot['bio'],
+        uid: snapshot['uid'],
+        profilePic: snapshot['profilePic'],
+        phoneNumber: snapshot['phoneNumber'],
+      );
+      _uid = userModel.uid;
+    });
   }
 
   // STORING DATA LOCALLY
@@ -178,5 +196,4 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
     s.clear();
   }
-
 }

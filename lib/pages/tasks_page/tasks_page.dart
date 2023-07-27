@@ -17,6 +17,8 @@ class _TasksPageState extends State<TasksPage> {
     'Sunday',
   ];
 
+  List<String> tasks = []; // Lista do przechowywania zadań
+
   void _previousDay() {
     setState(() {
       _selectedDayIndex = (_selectedDayIndex - 1) % daysOfWeek.length;
@@ -30,6 +32,41 @@ class _TasksPageState extends State<TasksPage> {
     setState(() {
       _selectedDayIndex = (_selectedDayIndex + 1) % daysOfWeek.length;
     });
+  }
+
+  void _showTaskInput() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String newTask = '';
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          title: Text('Add a task', style: TextStyle(color: Colors.white)),
+          content: TextField(
+            onChanged: (value) {
+              newTask = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  tasks.add(newTask);
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Add'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -73,12 +110,27 @@ class _TasksPageState extends State<TasksPage> {
             ),
           ),
           Expanded(
-            child: Container(
-              color: Color.fromRGBO(25,25,25, 0.8), // Grey background color
-              child: Center(
-                child: Text(
-                  'Add your tasks',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
+            child: GestureDetector(
+              onTap: _showTaskInput, // Wywołujemy funkcję po kliknięciu
+              child: Container(
+                color: Color.fromRGBO(25, 25, 25, 0.8), // Grey background color
+                child: Center(
+                  child: tasks.isEmpty
+                      ? Text(
+                    'Add your tasks',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  )
+                      : ListView.builder(
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(
+                          tasks[index],
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

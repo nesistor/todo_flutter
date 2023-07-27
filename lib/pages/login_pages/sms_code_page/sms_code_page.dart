@@ -9,6 +9,7 @@ import 'package:todo_flutter/provider/auth_provider.dart';
 
 import 'package:todo_flutter/pages/welcome_page/page_widgets/custom_button.dart';
 import 'package:todo_flutter/pages/user_information_page/user_information_page.dart';
+import 'package:todo_flutter/pages/main_page/main_page.dart';
 
 class SmsCodePage extends StatefulWidget {
   final String verificationId;
@@ -143,10 +144,22 @@ class _WelcomePageState extends State<SmsCodePage> {
       onSuccess: () {
         authProvider.checkExistingUser().then((value) async {
           if (value == true) {
+            authProvider.getDataFromFirestore().then(
+                  (value) => authProvider.saveUserDataToSP().then(
+                    (value) => authProvider.setSignIn().then(
+                      (value) => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MainPage(),
+                      ),
+                          (route) => false),
+                ),
+              ),
+            );
           } else {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => UserInformationPage()),
+                MaterialPageRoute(builder: (context) => const UserInformationPage()),
                 (route) => false);
           }
         });
