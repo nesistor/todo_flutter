@@ -120,7 +120,7 @@ class AuthProvider extends ChangeNotifier {
     required File profilePic,
     required Function onSucces,
   }) async {
-    _isLoading == true;
+    _isLoading = true;
     notifyListeners();
     try {
       // uploading image to firebase storage.

@@ -55,13 +55,15 @@ class _WelcomePageState extends State<WelcomePage> {
                         width: double.infinity,
                         height: 50,
                         child: CustomButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (authProvider.isSignedIn == true) {
                               //when true then fetch shared preference data
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MainPage(),
+                              await authProvider.getDataFromSP().whenComplete(
+                                    () => Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MainPage(),
+                                  ),
                                 ),
                               );
                             } else {

@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_flutter/custom_widgets/toast_bar.dart';
 import 'package:pinput/pinput.dart';
+import 'package:todo_flutter/pages/profile_page/profile_page.dart';
 import 'package:todo_flutter/provider/auth_provider.dart';
 
 import 'package:todo_flutter/pages/welcome_page/page_widgets/custom_button.dart';
@@ -135,34 +136,41 @@ class _WelcomePageState extends State<SmsCodePage> {
     );
   }
 
+  // verify otp
   void verifyOtp(BuildContext context, String userOtp) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.verifyOtp(
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    ap.verifyOtp(
       context: context,
       verificationId: widget.verificationId,
       userOtp: userOtp,
       onSuccess: () {
-        authProvider.checkExistingUser().then((value) async {
-          if (value == true) {
-            authProvider.getDataFromFirestore().then(
-                  (value) => authProvider.saveUserDataToSP().then(
-                    (value) => authProvider.setSignIn().then(
-                      (value) => Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MainPage(),
-                      ),
-                          (route) => false),
+        // checking whether user exists in the db
+        ap.checkExistingUser().then(
+              (value) async {
+            if (value == true) {
+              // user exists in our app
+              ap.getDataFromFirestore().then(
+                    (value) => ap.saveUserDataToSP().then(
+                      (value) => ap.setSignIn().then(
+                        (value) => Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainPage(),
+                        ),
+                            (route) => false),
+                  ),
                 ),
-              ),
-            );
-          } else {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const UserInformationPage()),
-                (route) => false);
-          }
-        });
+              );
+            } else {
+              // new user
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const UserInformationPage()),
+                      (route) => false);
+            }
+          },
+        );
       },
     );
   }
