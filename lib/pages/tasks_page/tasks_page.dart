@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_flutter/pages/tasks_page/page_widgets/custom_dialog.dart';
 
 class TasksPage extends StatefulWidget {
+  const TasksPage({super.key});
+
   @override
   _TasksPageState createState() => _TasksPageState();
 }
@@ -19,6 +21,7 @@ class _TasksPageState extends State<TasksPage> {
   ];
 
   List<String> tasks = [];
+  bool isDialogVisible = false;
 
   void _previousDay() {
     setState(() {
@@ -36,6 +39,9 @@ class _TasksPageState extends State<TasksPage> {
   }
 
   void _showTaskInput() {
+    setState(() {
+      isDialogVisible = true;
+    });
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -46,9 +52,15 @@ class _TasksPageState extends State<TasksPage> {
               _selectedDayIndex = selectedDayIndex;
             });
             Navigator.of(context).pop();
+            setState(() {
+              isDialogVisible = false;
+            });
           },
           onCancelPressed: () {
             Navigator.of(context).pop();
+            setState(() {
+              isDialogVisible = false;
+            });
           },
           selectedDayIndex: _selectedDayIndex,
           daysOfWeek: daysOfWeek,
@@ -60,68 +72,78 @@ class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Container(
-            height: 100,
-            color: Colors.black,
+          Visibility(
+            visible: !isDialogVisible,
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: 44.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(width: 44.0),
-                      IconButton(
-                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-                        onPressed: _previousDay,
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            daysOfWeek[_selectedDayIndex],
-                            style: TextStyle(fontSize: 30, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
-                        onPressed: _nextDay,
-                      ),
-                      SizedBox(width: 44.0),
-                    ],
-                  ),
-                ],
+              child: Text(
+                'Add your tasks',
+                style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
           ),
-          Expanded(
-            child: GestureDetector(
-              onTap: _showTaskInput,
-              child: Container(
-                color: Color.fromRGBO(25, 25, 25, 0.8),
+          Column(
+            children: [
+              Container(
+                height: 100,
+                color: Colors.black,
                 child: Center(
-                  child: tasks.isEmpty
-                      ? Text(
-                    'Add your tasks',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  )
-                      : ListView.builder(
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(
-                          tasks[index],
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      );
-                    },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 44.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 44.0),
+                          IconButton(
+                            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                            onPressed: _previousDay,
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                daysOfWeek[_selectedDayIndex],
+                                style: TextStyle(fontSize: 30, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                            onPressed: _nextDay,
+                          ),
+                          SizedBox(width: 44.0),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: !isDialogVisible ? _showTaskInput : null,
+                  child: Container(
+                    color: Color.fromRGBO(25, 25, 25, 0.8),
+                    child: Center(
+                      child: tasks.isEmpty
+                          ? null
+                          : ListView.builder(
+                        itemCount: tasks.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(
+                              tasks[index],
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

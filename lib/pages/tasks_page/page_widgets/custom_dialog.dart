@@ -19,6 +19,7 @@ class CustomDialog extends StatefulWidget {
 
 class _CustomDialogState extends State<CustomDialog> {
   String newTask = '';
+  bool showDayList = false; // Set to true to show the list initially
 
   @override
   Widget build(BuildContext context) {
@@ -60,39 +61,85 @@ class _CustomDialogState extends State<CustomDialog> {
               ),
             ),
             SizedBox(height: 10),
-            DropdownButton<int>(
-              value: widget.selectedDayIndex,
-              onChanged: (int? newValue) {
+            GestureDetector(
+              onTap: () {
                 setState(() {
-                  widget.selectedDayIndex = newValue!;
+                  showDayList = true;
                 });
               },
-              items: widget.daysOfWeek
-                  .asMap() // Convert the list to map with indices
-                  .map((index, day) => MapEntry(
-                index,
-                DropdownMenuItem<int>(
-                  value: index,
-                  child: Text(day),
+              child: Container(
+                height: 40, // Set the initial height to show only one day
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
                 ),
-              ))
-                  .values
-                  .toList(),
+                child: Center(
+                  child: Text(
+                    widget.daysOfWeek[widget.selectedDayIndex],
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+              ),
             ),
-            SizedBox(height: 10),
+            if (showDayList)
+              Container(
+                height: 200, // Set the height to show the list of days
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                ),
+                child: ListView.builder(
+                  itemCount: widget.daysOfWeek.length,
+                  itemBuilder: (context, index) {
+                    String day = widget.daysOfWeek[index];
+                    return ListTile(
+                      title: Text(day),
+                      onTap: () {
+                        setState(() {
+                          widget.selectedDayIndex = index;
+                          showDayList = false; // Hide the list after selection
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                TextButton(
-                  onPressed: () {
-                    String selectedDay = widget.daysOfWeek[widget.selectedDayIndex];
-                    widget.onAddPressed(newTask, widget.selectedDayIndex);
-                  },
-                  child: Text('Add'),
+                Container(
+                  width: 120, // Set the desired width for both buttons
+                  height: 40, // Set the desired height for both buttons
+                  child: TextButton(
+                    onPressed: widget.onCancelPressed,
+                    style: TextButton.styleFrom(
+                      primary: Colors.white, // Text color
+                      backgroundColor: Colors.black, // Button background color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: Text('Cancel'),
+                  ),
                 ),
-                TextButton(
-                  onPressed: widget.onCancelPressed,
-                  child: Text('Cancel'),
+                Container(
+                  width: 120, // Set the desired width for both buttons
+                  height: 40, // Set the desired height for both buttons
+                  child: TextButton(
+                    onPressed: () {
+                      String selectedDay = widget.daysOfWeek[widget.selectedDayIndex];
+                      widget.onAddPressed(newTask, widget.selectedDayIndex);
+                    },
+                    style: TextButton.styleFrom(
+                      primary: Colors.white, // Text color
+                      backgroundColor: Colors.indigo.shade900, // Button background color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: Text('Add'),
+                  ),
                 ),
               ],
             ),
@@ -102,5 +149,3 @@ class _CustomDialogState extends State<CustomDialog> {
     );
   }
 }
-
-
