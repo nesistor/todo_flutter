@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_flutter/pages/tasks_page/page_widgets/custom_dialog.dart';
 
 class TasksPage extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _TasksPageState extends State<TasksPage> {
     'Sunday',
   ];
 
-  List<String> tasks = []; // Lista do przechowywania zadań
+  List<String> tasks = [];
 
   void _previousDay() {
     setState(() {
@@ -38,32 +39,19 @@ class _TasksPageState extends State<TasksPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String newTask = '';
-        return AlertDialog(
-          backgroundColor: Colors.black,
-          title: Text('Add a task', style: TextStyle(color: Colors.white)),
-          content: TextField(
-            onChanged: (value) {
-              newTask = value;
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  tasks.add(newTask);
-                });
-                Navigator.of(context).pop();
-              },
-              child: Text('Add'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-          ],
+        return CustomDialog(
+          onAddPressed: (String newTask, int selectedDayIndex) {
+            setState(() {
+              tasks.add(newTask);
+              _selectedDayIndex = selectedDayIndex;
+            });
+            Navigator.of(context).pop();
+          },
+          onCancelPressed: () {
+            Navigator.of(context).pop();
+          },
+          selectedDayIndex: _selectedDayIndex,
+          daysOfWeek: daysOfWeek,
         );
       },
     );
@@ -111,9 +99,9 @@ class _TasksPageState extends State<TasksPage> {
           ),
           Expanded(
             child: GestureDetector(
-              onTap: _showTaskInput, // Wywołujemy funkcję po kliknięciu
+              onTap: _showTaskInput,
               child: Container(
-                color: Color.fromRGBO(25, 25, 25, 0.8), // Grey background color
+                color: Color.fromRGBO(25, 25, 25, 0.8),
                 child: Center(
                   child: tasks.isEmpty
                       ? Text(

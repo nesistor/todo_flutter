@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:todo_flutter/pages/user_information_page/user_information_page.dart';
 import 'package:todo_flutter/provider/auth_provider.dart';
 import 'package:todo_flutter/pages/welcome_page/welcome_page.dart';
 import 'package:provider/provider.dart';
@@ -67,14 +68,21 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundImage:
                         NetworkImage(authProvider.userModel.profilePic),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 60),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             CustomProfileButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const UserInformationPage(),
+                                  ),
+                                );
+                              },
                               text: "Profile",
                               icon: const Icon(Icons.person),
                             ),

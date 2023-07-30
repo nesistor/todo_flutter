@@ -49,64 +49,62 @@ class _UserInformationPageState extends State<UserInformationPage> {
             : SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
                     vertical: 25.0, horizontal: 25.0),
-                child: Container(
-                  child: Center(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 33),
-                        InkWell(
-                          onTap: () => selectImage(),
-                          child: image == null
-                              ? const CircleAvatar(
-                                  backgroundColor: Color(0xFF1A237E),
-                                  radius: 50,
-                                  child: Icon(Icons.account_circle,
-                                      size: 50, color: Colors.white),
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: FileImage(image!),
-                                  radius: 50,
-                                ),
+                child: Center(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 33),
+                      InkWell(
+                        onTap: () => selectImage(),
+                        child: image == null
+                            ? const CircleAvatar(
+                                backgroundColor: Color(0xFF1A237E),
+                                radius: 50,
+                                child: Icon(Icons.account_circle,
+                                    size: 50, color: Colors.white),
+                              )
+                            : CircleAvatar(
+                                backgroundImage: FileImage(image!),
+                                radius: 50,
+                              ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 15),
+                        margin: const EdgeInsets.only(top: 20),
+                        child: Column(
+                          children: [
+                            textField(
+                                hintText: "Kubus Puchatek",
+                                icon: Icons.account_circle,
+                                textInputType: TextInputType.name,
+                                maxLines: 1,
+                                controller: nameController),
+                            textField(
+                                hintText: "ak47@gmail.com",
+                                icon: Icons.email,
+                                textInputType: TextInputType.emailAddress,
+                                maxLines: 1,
+                                controller: emailController),
+                            textField(
+                                hintText: "Enter your bio here",
+                                icon: Icons.edit,
+                                textInputType: TextInputType.name,
+                                maxLines: 2,
+                                controller: bioController),
+                          ],
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 15),
-                          margin: const EdgeInsets.only(top: 20),
-                          child: Column(
-                            children: [
-                              textField(
-                                  hintText: "Kubus Puchatek",
-                                  icon: Icons.account_circle,
-                                  textInputType: TextInputType.name,
-                                  maxLines: 1,
-                                  controller: nameController),
-                              textField(
-                                  hintText: "ak47@gmail.com",
-                                  icon: Icons.email,
-                                  textInputType: TextInputType.emailAddress,
-                                  maxLines: 1,
-                                  controller: emailController),
-                              textField(
-                                  hintText: "Enter your bio here",
-                                  icon: Icons.edit,
-                                  textInputType: TextInputType.name,
-                                  maxLines: 2,
-                                  controller: bioController),
-                            ],
-                          ),
+                      ),
+                      const SizedBox(height: 33),
+                      SizedBox(
+                        height: 50.0,
+                        width: MediaQuery.of(context).size.width,
+                        child: CustomButton(
+                          text: "Continue",
+                          onPressed: () => storeData(),
                         ),
-                        const SizedBox(height: 33),
-                        SizedBox(
-                          height: 50.0,
-                          width: MediaQuery.of(context).size.width,
-                          child: CustomButton(
-                            text: "Continue",
-                            onPressed: () => storeData(),
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -132,7 +130,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
               margin: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: const Color(0xFF1A237E),
+                color: Color.fromRGBO(25, 25, 25, 0.8),
               ),
               child: Icon(
                 icon,
@@ -141,6 +139,12 @@ class _UserInformationPageState extends State<UserInformationPage> {
               ),
             ),
             enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                color: Colors.white,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
               borderSide: const BorderSide(
                 color: Colors.white,
