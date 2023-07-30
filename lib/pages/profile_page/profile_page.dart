@@ -89,7 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             SizedBox(height: 10),
                             CustomProfileButton(
                               onPressed: () {},
-                              text: "Chat",
+                              text: "Feedback",
                               icon: const Icon(Icons.chat_bubble_outline_rounded),
                             ),
                             SizedBox(height: 10),

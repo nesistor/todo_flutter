@@ -31,8 +31,8 @@ class _CustomDialogState extends State<CustomDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Add a task', style: TextStyle(color: Colors.white)),
-            SizedBox(height: 10),
+            Text('Add a task', style: TextStyle(color: Colors.white, fontSize: 20)),
+            SizedBox(height: 20),
             Flexible(
               child: TextField(
                 onChanged: (value) {
@@ -50,7 +50,7 @@ class _CustomDialogState extends State<CustomDialog> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: Colors.white,
                     ),
                   ),
@@ -60,7 +60,7 @@ class _CustomDialogState extends State<CustomDialog> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -104,7 +104,7 @@ class _CustomDialogState extends State<CustomDialog> {
                   },
                 ),
               ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

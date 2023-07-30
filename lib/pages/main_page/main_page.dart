@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Use the correct package import
 
+import 'package:todo_flutter/pages/article_page/article_page.dart';
 import 'package:todo_flutter/pages/search_page/search_page.dart';
 import 'package:todo_flutter/pages/profile_page/profile_page.dart';
 import 'package:todo_flutter/pages/tasks_page/tasks_page.dart';
+import 'package:todo_flutter/pages/chat_page/chat_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -11,11 +14,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _page = 0;
+  int _page = 2;
 
   final List<Widget> _pages = [
     SearchPage(),
+    ChatPage(),
     TasksPage(),
+    ArticlesPage(),
     ProfilePage(),
   ];
 
@@ -26,7 +31,14 @@ class _MainPageState extends State<MainPage> {
         height: 55.0,
         items: <Widget>[
           Icon(Icons.search, size: 30, color: Colors.white),
-          Icon(Icons.add, size: 50, color: Colors.white),
+          Icon(Icons.chat_bubble_outline_rounded, size: 28, color: Colors.white),
+          Icon(Icons.add, size: 60, color: Colors.white),
+          SvgPicture.asset(
+            'assets/icons/iconizer-jellyfish.svg',
+            height: 30,
+            width: 30,
+            color: Colors.white,
+          ),
           Icon(Icons.person, size: 30, color: Colors.white),
         ],
         color: Colors.black,
@@ -54,4 +66,3 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
-

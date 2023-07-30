@@ -84,6 +84,7 @@ flutter:
     - assets/background/login_background_new1.png
     - assets/background/login_background_new2.png
     - assets/launcher_icon/cellyfish_icon2.png
+    - assets/icons/iconizer-jellyfish.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
