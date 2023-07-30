@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_flutter/provider/auth_provider.dart';
 import 'package:todo_flutter/pages/welcome_page/welcome_page.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_flutter/pages/profile_page/page_widgets/custom_button.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,85 +12,113 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
+void signOutAndNavigateToWelcomePage(BuildContext context) {
+  final authProvider = Provider.of<AuthProvider>(context,
+      listen: false); // Replace this with your actual AuthProvider instance
+
+  authProvider.userSignOut().then(
+        (value) => Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const WelcomePage(),
+      ),
+    ),
+  );
+}
+
+// ... existing code
+
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    child: ImageFiltered(
-                      imageFilter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 1.0),
-                      child: Image.asset(
-                        'assets/background/login_background_new1.png',
-                        color: Colors.white.withOpacity(0.8),
-                        colorBlendMode: BlendMode.modulate,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                    ),
-                  ),
+      backgroundColor: const Color.fromRGBO(25, 25, 25, 0.8),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250, // Height of the expanded container
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                child: Image.asset(
+                  'assets/background/login_background_new1.png',
+                  color: Colors.white.withOpacity(0.8),
+                  colorBlendMode: BlendMode.modulate,
+                  fit: BoxFit.cover,
                 ),
-                Expanded(
-                  child: Container(
-                    color: Color.fromRGBO(25, 25, 25, 0.8),
-                    // Adjust the height of the black screen as needed
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Transform.translate(
+                  offset: Offset(0, -120), // Move the content up
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 120), // Space for the background image
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundImage:
+                        NetworkImage(authProvider.userModel.profilePic),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CustomProfileButton(
+                              onPressed: () {},
+                              text: "Profile",
+                              icon: const Icon(Icons.person),
+                            ),
+                            SizedBox(height: 10),
+                            CustomProfileButton(
+                              onPressed: () {},
+                              text: "Chat",
+                              icon: const Icon(Icons.chat_bubble_outline_rounded),
+                            ),
+                            SizedBox(height: 10),
+                            CustomProfileButton(
+                              onPressed: () {},
+                              text: "Settings",
+                              icon: const Icon(Icons.settings),
+                            ),
+                            SizedBox(height: 10),
+                            CustomProfileButton(
+                              onPressed: () {
+                                signOutAndNavigateToWelcomePage(context);
+                              },
+                              text: "Sign out",
+                              icon: const Icon(Icons.exit_to_app),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-          Column(
-            children: [
-              Expanded(
-                child: Center(
-                  child: Positioned(
-                    top: MediaQuery.of(context).size.height / 2 -
-                        145, // Adjust the vertical position of the avatar
-                    left: MediaQuery.of(context).size.width / 2 -
-                        70, // Adjust the horizontal position of the avatar
-                    child: CircleAvatar(
-                      radius: 70,
-                      backgroundImage: NetworkImage(authProvider.userModel.profilePic),
-                      // Provide the profile photo image
-                    ),
-                  ),
-
-                ),
-              ),
-              Text(authProvider.userModel.name),
-              Text(authProvider.userModel.phoneNumber),
-              Text(authProvider.userModel.email),
-              Text(authProvider.userModel.bio),
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      authProvider.userSignOut().then(
-                            (value) => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const WelcomePage(),
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.exit_to_app, color: Colors.white),
-                  ),
-                  Text("Log out"),
-                ],
-              ),
-            ],
           ),
         ],
       ),
     );
   }
 }
+
+
+
+
+/*Text(authProvider.userModel.name),
+                  Text(authProvider.userModel.phoneNumber),
+                  Text(authProvider.userModel.email),
+                  Text(authProvider.userModel.bio),
+                  CustomProfileButton(onPressed: signOutAndNavigateToWelcomePage(), text: Text("Sign out"), icon: Icons.exit_to_app)
+                  SizedBox(height: 16),*/
