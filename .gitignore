@@ -42,3 +42,33 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Flutter/Dart related
+.dart_tool/
+.pub/
+build/
+/.idea/
+/.vscode/
+
+# Android related
+android/app/build/
+android/build/
+android/gradle/
+/android/local.properties
+
+# iOS related
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/AppFrameworkInfo.plist
+/ios/Runner.xcworkspace
+
+# Firebase
+/.firebase/
+/google-services.json
+/GoogleService-Info.plist
+
+# Temporary files
+*.lock
+*~
+.DS_Store
