@@ -24,15 +24,15 @@ class _CustomDialogState extends State<CustomDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Color.fromRGBO(25, 25, 25, 0.8),
+      backgroundColor: const Color.fromRGBO(25, 25, 25, 0.8),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Add a task', style: TextStyle(color: Colors.white, fontSize: 20)),
-            SizedBox(height: 20),
+            const Text('Add a task', style: TextStyle(color: Colors.white, fontSize: 20)),
+            const SizedBox(height: 20),
             Flexible(
               child: TextField(
                 onChanged: (value) {

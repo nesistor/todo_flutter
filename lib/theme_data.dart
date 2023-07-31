@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 ThemeData todoThemeData = ThemeData(
   primarySwatch: Colors.blue,
-  scaffoldBackgroundColor: const Color(0xFF0A0A0A),
+  scaffoldBackgroundColor: const Color(0xFF191919),
   fontFamily: 'Montserrat',
   textTheme: const TextTheme(
     headlineLarge: TextStyle(
