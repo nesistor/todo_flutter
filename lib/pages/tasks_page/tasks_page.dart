@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_flutter/pages/tasks_page/page_widgets/custom_dialog.dart';
+import 'package:todo_flutter/sqflite/repositories/database_repository.dart';
 
 class TasksPage extends StatefulWidget {
   const TasksPage({super.key});
@@ -9,6 +10,25 @@ class TasksPage extends StatefulWidget {
 }
 
 class _TasksPageState extends State<TasksPage> {
+  List<Map<String, dynamic>> _journals = [];
+
+  bool _isLoading = true;
+
+  void _refreshJournals() async {
+    final data = await DatabaseRepository.getItems();
+    setState(() {
+      _journals = data;
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshJournals();
+    print("..number of itmes ${_journals.length}");
+  }
+
   int _selectedDayIndex = 0;
   final List<String> daysOfWeek = [
     'Monday',

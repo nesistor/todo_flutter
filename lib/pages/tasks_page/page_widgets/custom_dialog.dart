@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+
 class CustomDialog extends StatefulWidget {
   final void Function(String, int) onAddPressed;
   final VoidCallback onCancelPressed;
   int selectedDayIndex;
   final List<String> daysOfWeek;
 
-  CustomDialog({
+  CustomDialog({super.key,
     required this.onAddPressed,
     required this.onCancelPressed,
     required this.selectedDayIndex,
@@ -42,6 +43,7 @@ class _CustomDialogState extends State<CustomDialog> {
                 },
                 maxLines: null,
                 decoration: InputDecoration(
+                  hintText: "title",
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: const BorderSide(
@@ -50,7 +52,7 @@ class _CustomDialogState extends State<CustomDialog> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.white,
                     ),
                   ),
@@ -60,7 +62,36 @@ class _CustomDialogState extends State<CustomDialog> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            Flexible(
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    newTask = value;
+                  });
+                },
+                maxLines: null,
+                decoration: InputDecoration(
+                  hintText: "description",
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Colors.white,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const  BorderSide(
+                      color: Colors.white,
+                    ),
+                  ),
+                  border: InputBorder.none,
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -76,7 +107,7 @@ class _CustomDialogState extends State<CustomDialog> {
                 child: Center(
                   child: Text(
                     widget.daysOfWeek[widget.selectedDayIndex],
-                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ),
               ),
@@ -104,26 +135,26 @@ class _CustomDialogState extends State<CustomDialog> {
                   },
                 ),
               ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
+                SizedBox(
                   width: 120, // Set the desired width for both buttons
                   height: 40, // Set the desired height for both buttons
                   child: TextButton(
                     onPressed: widget.onCancelPressed,
                     style: TextButton.styleFrom(
-                      primary: Colors.white, // Text color
+                      disabledBackgroundColor: Colors.white, // Text color
                       backgroundColor: Colors.black, // Button background color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    child: Text('Cancel'),
+                    child: const Text('Cancel'),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 120, // Set the desired width for both buttons
                   height: 40, // Set the desired height for both buttons
                   child: TextButton(
@@ -132,13 +163,13 @@ class _CustomDialogState extends State<CustomDialog> {
                       widget.onAddPressed(newTask, widget.selectedDayIndex);
                     },
                     style: TextButton.styleFrom(
-                      primary: Colors.white, // Text color
+                      disabledBackgroundColor: Colors.white, // Text color
                       backgroundColor: Colors.indigo.shade900, // Button background color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    child: Text('Add'),
+                    child: const Text('Add'),
                   ),
                 ),
               ],

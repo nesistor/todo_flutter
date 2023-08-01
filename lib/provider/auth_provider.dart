@@ -10,7 +10,7 @@ import 'package:todo_flutter/custom_widgets/toast_bar.dart';
 import 'package:todo_flutter/pages/login_pages/sms_code_page/sms_code_page.dart';
 
 import 'package:todo_flutter/model/user_model.dart';
-
+import 'package:todo_flutter/shared_preferences.dart';
 import 'package:todo_flutter/utils/utils.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -28,20 +28,36 @@ class AuthProvider extends ChangeNotifier {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   AuthProvider() {
-    checkSignedIn();
+    checkSignedInStatus();
   }
 
-  void checkSignedIn() async {
-    final SharedPreferences s = await SharedPreferences.getInstance();
-    _isSignedIn = s.getBool("is_signed_in") ?? false;
-    notifyListeners();
+  Future<void> checkSignedInStatus() async {
+    SharedPreferencesHelper.checkSignedIn((isSignedIn) {
+      _isSignedIn = isSignedIn;
+      notifyListeners();
+    });
   }
 
-  Future setSignIn() async {
-    final SharedPreferences s = await SharedPreferences.getInstance();
-    s.setBool("is_signed_in", true);
+  Future<void> setSignedInStatus() async {
+    await SharedPreferencesHelper.setSignIn(true);
     _isSignedIn = true;
     notifyListeners();
+  }
+
+  Future<String?> getUserToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user != null) {
+        IdTokenResult tokenResult = await user.getIdTokenResult();
+        String token = tokenResult.token ?? "";
+        await SharedPreferencesHelper.saveUserToken(token);
+        return tokenResult.token;
+      }
+    } catch (e) {
+      print("Error getting user token: $e");
+    }
+    return null;
   }
 
   // sign In

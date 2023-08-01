@@ -179,7 +179,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
         onSucces: () {
           // now we store data localy also
           authProvider.saveUserDataToSP().then(
-                (value) => authProvider.setSignIn().then(
+                (value) => authProvider.setSignedInStatus().then(
                       (value) => Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(

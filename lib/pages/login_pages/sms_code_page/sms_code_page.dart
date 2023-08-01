@@ -46,7 +46,7 @@ class _WelcomePageState extends State<SmsCodePage> {
                   child: CircularProgressIndicator(color: Colors.white))
               : Padding(
                   padding: const EdgeInsets.only(
-                      top: 40.0, left: 25.0), // Add top padding here
+                      top: 40.0, left: 25.0),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: GestureDetector(
@@ -151,7 +151,7 @@ class _WelcomePageState extends State<SmsCodePage> {
               // user exists in our app
               ap.getDataFromFirestore().then(
                     (value) => ap.saveUserDataToSP().then(
-                      (value) => ap.setSignIn().then(
+                      (value) => ap.setSignedInStatus().then(
                         (value) => Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(

@@ -21,10 +21,10 @@ class TaskModel {
   }) {
     return TaskModel(
       id,
-      ownedBy ?? this.title,
-      message ?? this.description,
+      ownedBy ?? title,
+      message ?? description,
       createdAt ?? this.createdAt,
-      pendingLyric ?? this.sharedTo,
+      pendingLyric ?? sharedTo,
     );
   }
 
