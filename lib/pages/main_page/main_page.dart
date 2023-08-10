@@ -14,14 +14,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _page = 2;
+  int _page = 0;
 
   final List<Widget> _pages = [
-    SearchPage(),
-    ChatPage(),
-    TasksPage(),
+    const SearchPage(),
+    const ChatPage(),
+    const TasksPage(),
     ArticlesPage(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   @override
@@ -30,22 +30,25 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: CurvedNavigationBar(
         height: 55.0,
         items: <Widget>[
-          Icon(Icons.search, size: 30, color: Colors.white),
-          Icon(Icons.chat_bubble_outline_rounded, size: 28, color: Colors.white),
-          Icon(Icons.add, size: 60, color: Colors.white),
-          SvgPicture.asset(
-            'assets/icons/iconizer-jellyfish.svg',
-            height: 30,
-            width: 30,
-            color: Colors.white,
+          const Icon(Icons.search, size: 30, color: Colors.white),
+          Image.asset(
+            'assets/icons/stats1.png',
+            width: 28,
+            height: 28,
           ),
-          Icon(Icons.person, size: 30, color: Colors.white),
+          const Icon(Icons.add, size: 60, color: Colors.white),
+          Image.asset(
+            'assets/icons/jellyfish1.png',
+            width: 28,
+            height: 28,
+          ),
+          const Icon(Icons.person, size: 30, color: Colors.white),
         ],
         color: Colors.black,
         buttonBackgroundColor: Colors.black,
-        backgroundColor: Color.fromRGBO(25, 25, 25, 0.8),
+        backgroundColor: const Color.fromRGBO(25, 25, 25, 0.8),
         animationCurve: Curves.easeInOut,
-        animationDuration: Duration(milliseconds: 300),
+        animationDuration: const Duration(milliseconds: 300),
         onTap: (index) {
           if (index == 1) {
             // Navigate to the TasksPage by changing the page index

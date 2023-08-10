@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 
 class CustomDialog extends StatefulWidget {
-  final void Function(String, int) onAddPressed;
+  final void Function(String, DateTime) onAddPressed;
   final VoidCallback onCancelPressed;
   int selectedDayIndex;
-  final List<String> daysOfWeek;
 
-  CustomDialog({super.key,
+  CustomDialog({
+    Key? key,
     required this.onAddPressed,
     required this.onCancelPressed,
     required this.selectedDayIndex,
-    required this.daysOfWeek,
-  });
+  }) : super(key: key);
 
   @override
   _CustomDialogState createState() => _CustomDialogState();
@@ -20,7 +22,38 @@ class CustomDialog extends StatefulWidget {
 
 class _CustomDialogState extends State<CustomDialog> {
   String newTask = '';
-  bool showDayList = false; // Set to true to show the list initially
+  final CalendarFormat _calendarFormat = CalendarFormat.week;
+  DateTime _selectedDay = DateTime.now();
+  DateTime _focusedDay = DateTime.now();
+  bool _isCalendarExpanded = false;
+  List<String> friendsOrTeams = [
+    'Friend 1',
+    'Friend 2',
+    'Friend 3',
+  ];
+
+  void _showMultiSelect(BuildContext context) async {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return MultiSelectBottomSheet(
+          items: friendsOrTeams
+              .map((item) => MultiSelectItem<String>(item, item))
+              .toList(),
+          initialValue: ['none'], // You can provide an initial value if needed
+          onConfirm: (values) {
+            // Handle selected friends/teams here
+            if (values != null) {
+              print('Selected Friends/Teams: $values');
+              Navigator.pop(ctx); // Close the bottom sheet
+            }
+          },
+          maxChildSize: 0.8,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,46 +128,72 @@ class _CustomDialogState extends State<CustomDialog> {
             GestureDetector(
               onTap: () {
                 setState(() {
-                  showDayList = true;
+                  _isCalendarExpanded = !_isCalendarExpanded;
                 });
               },
               child: Container(
-                height: 40, // Set the initial height to show only one day
+                height: 40,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.black),
                   color: Colors.white,
                 ),
                 child: Center(
                   child: Text(
-                    widget.daysOfWeek[widget.selectedDayIndex],
-                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                    DateFormat('EEEE, MMMM d').format(_selectedDay), // Format to display day name, month, and day
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
               ),
             ),
-            if (showDayList)
+            if (_isCalendarExpanded) // Show the calendar if it's expanded
               Container(
-                height: 200, // Set the height to show the list of days
+                height: 140,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.white,
                 ),
-                child: ListView.builder(
-                  itemCount: widget.daysOfWeek.length,
-                  itemBuilder: (context, index) {
-                    String day = widget.daysOfWeek[index];
-                    return ListTile(
-                      title: Text(day),
-                      onTap: () {
-                        setState(() {
-                          widget.selectedDayIndex = index;
-                          showDayList = false; // Hide the list after selection
-                        });
-                      },
-                    );
+                child: TableCalendar(
+                  calendarFormat: _calendarFormat,
+                  focusedDay: _focusedDay,
+                  firstDay: DateTime.utc(2023, 1, 1),
+                  lastDay: DateTime.utc(2023, 12, 31),
+                  selectedDayPredicate: (day) {
+                    return isSameDay(_selectedDay, day);
+                  },
+                  calendarStyle: const CalendarStyle(
+                    defaultTextStyle: TextStyle(color: Colors.black),
+                    weekendTextStyle: TextStyle(color: Colors.red),
+                    selectedTextStyle: TextStyle(color: Colors.white),
+                  ),
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                    });
                   },
                 ),
               ),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                _showMultiSelect(context);
+              },
+              child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.black),
+                  color: Colors.white,
+                ),
+                child: Center(
+                  child: Text(
+                    'Share To',
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -151,7 +210,7 @@ class _CustomDialogState extends State<CustomDialog> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    child: const Text('Cancel'),
+                    child: const Text('Cancel', style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 SizedBox(
@@ -159,8 +218,7 @@ class _CustomDialogState extends State<CustomDialog> {
                   height: 40, // Set the desired height for both buttons
                   child: TextButton(
                     onPressed: () {
-                      String selectedDay = widget.daysOfWeek[widget.selectedDayIndex];
-                      widget.onAddPressed(newTask, widget.selectedDayIndex);
+                      widget.onAddPressed(newTask, _selectedDay);
                     },
                     style: TextButton.styleFrom(
                       disabledBackgroundColor: Colors.white, // Text color
@@ -169,7 +227,7 @@ class _CustomDialogState extends State<CustomDialog> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    child: const Text('Add'),
+                    child: const Text('Add', style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
@@ -180,3 +238,4 @@ class _CustomDialogState extends State<CustomDialog> {
     );
   }
 }
+

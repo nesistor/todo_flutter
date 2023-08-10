@@ -1,63 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:todo_flutter/pages/tasks_page/page_widgets/custom_dialog.dart';
-import 'package:todo_flutter/sqflite/repositories/database_repository.dart';
 
 class TasksPage extends StatefulWidget {
-  const TasksPage({super.key});
+  const TasksPage({Key? key}) : super(key: key);
 
   @override
   _TasksPageState createState() => _TasksPageState();
 }
 
 class _TasksPageState extends State<TasksPage> {
-  List<Map<String, dynamic>> _journals = [];
-
-  bool _isLoading = true;
-
-  void _refreshJournals() async {
-    final data = await DatabaseRepository.getItems();
-    setState(() {
-      _journals = data;
-      _isLoading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshJournals();
-    print("..number of itmes ${_journals.length}");
-  }
-
-  int _selectedDayIndex = 0;
-  final List<String> daysOfWeek = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
-
   List<String> tasks = [];
   bool isDialogVisible = false;
+  DateTime _selectedDay = DateTime.now();
+  List<String> friendsOrTeams = [
+    'Friend 1',
+    'Friend 2',
+    'Friend 3',
+  ];
 
-  void _previousDay() {
-    setState(() {
-      _selectedDayIndex = (_selectedDayIndex - 1) % daysOfWeek.length;
-      if (_selectedDayIndex < 0) {
-        _selectedDayIndex = daysOfWeek.length - 1;
-      }
-    });
-  }
 
-  void _nextDay() {
-    setState(() {
-      _selectedDayIndex = (_selectedDayIndex + 1) % daysOfWeek.length;
-    });
-  }
-
+  // This function display a dialog where user can add title, description and time when task should be completed
   void _showTaskInput() {
     setState(() {
       isDialogVisible = true;
@@ -66,15 +30,16 @@ class _TasksPageState extends State<TasksPage> {
       context: context,
       builder: (BuildContext context) {
         return CustomDialog(
-          onAddPressed: (String newTask, int selectedDayIndex) {
+          onAddPressed: (String newTask, DateTime selectedDay) {
             setState(() {
               tasks.add(newTask);
-              _selectedDayIndex = selectedDayIndex;
+              _selectedDay = selectedDay;
             });
             Navigator.of(context).pop();
             setState(() {
               isDialogVisible = false;
             });
+            _showShareDialog(context);
           },
           onCancelPressed: () {
             Navigator.of(context).pop();
@@ -82,8 +47,58 @@ class _TasksPageState extends State<TasksPage> {
               isDialogVisible = false;
             });
           },
-          selectedDayIndex: _selectedDayIndex,
-          daysOfWeek: daysOfWeek,
+          selectedDayIndex: _selectedDay.weekday - 1,
+        );
+      },
+    );
+  }
+
+  // This function display the dialog with question does the user want to share the task?
+  void _showShareDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Share Task'),
+          content: Text('Do you want to share it?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _showMultiSelectBottomSheet(context);
+              },
+              child: Text('Share'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  // This function display the dialog with sheet of freinds and teams
+  void _showMultiSelectBottomSheet(BuildContext context) async {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return MultiSelectBottomSheet(
+          items: friendsOrTeams
+              .map((item) => MultiSelectItem<String>(item, item))
+              .toList(),
+          initialValue: ['none'], // You can provide an initial value if needed
+          onConfirm: (values) {
+            // Handle selected friends/teams here
+            if (values != null) {
+              print('Selected Friends/Teams: $values');
+              Navigator.pop(context); // Close the bottom sheet
+            }
+          },
+          maxChildSize: 0.8,
         );
       },
     );
@@ -92,59 +107,37 @@ class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: const Text('Tasks',
+        style: TextStyle(fontSize: 24, color: Colors.white),
+      ),
+      centerTitle: true,
+      ),
       body: Stack(
         children: [
           Visibility(
             visible: !isDialogVisible,
-            child: Center(
-              child: Text(
-                'Add your tasks',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+            child: GestureDetector(
+              onTap: _showTaskInput,
+              child: Container(
+                color: const Color.fromRGBO(25, 25, 25, 0.8),
+                child: Center(
+                  child: Text(
+                    'Add your tasks for ${_selectedDay.day}/${_selectedDay.month}/${_selectedDay.year}',
+                    style: const TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
               ),
             ),
           ),
           Column(
             children: [
-              Container(
-                height: 100,
-                color: Colors.black,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 44.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(width: 44.0),
-                          IconButton(
-                            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-                            onPressed: _previousDay,
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                daysOfWeek[_selectedDayIndex],
-                                style: TextStyle(fontSize: 30, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
-                            onPressed: _nextDay,
-                          ),
-                          SizedBox(width: 44.0),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
               Expanded(
                 child: GestureDetector(
                   onTap: !isDialogVisible ? _showTaskInput : null,
                   child: Container(
-                    color: Color.fromRGBO(25, 25, 25, 0.8),
+                    color: const Color.fromRGBO(25, 25, 25, 0.8),
                     child: Center(
                       child: tasks.isEmpty
                           ? null
@@ -154,7 +147,7 @@ class _TasksPageState extends State<TasksPage> {
                           return ListTile(
                             title: Text(
                               tasks[index],
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           );
                         },

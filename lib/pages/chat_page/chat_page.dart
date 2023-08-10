@@ -15,7 +15,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Chat'),
+        title: Text('Progress'),
       ),
       body: Container(
         color: Color.fromRGBO(25, 25, 25, 0.8),

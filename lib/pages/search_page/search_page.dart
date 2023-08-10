@@ -33,7 +33,7 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Colors.black,
         automaticallyImplyLeading: false,
         title: Container(
-          margin: EdgeInsets.all(30.0),
+          margin: const EdgeInsets.all(30.0),
           height: 80.0,
           child: Stack(
             children: [
@@ -42,7 +42,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: Container(
                   height: 40.0,
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(25, 25, 25, 0.8), // Grey interior color
+                    color: const Color.fromRGBO(25, 25, 25, 0.8), // Grey interior color
                     borderRadius: BorderRadius.circular(25),
                   ),
                   child: Row(
