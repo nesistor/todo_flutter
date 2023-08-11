@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Use the correct package import
 
+// Import your other page files
 import 'package:todo_flutter/pages/article_page/article_page.dart';
 import 'package:todo_flutter/pages/search_page/search_page.dart';
 import 'package:todo_flutter/pages/profile_page/profile_page.dart';
@@ -20,9 +20,11 @@ class _MainPageState extends State<MainPage> {
     const SearchPage(),
     const ChatPage(),
     const TasksPage(),
-    ArticlesPage(),
+    ArticlesPage(), // Include your ArticlesPage here
     const ProfilePage(),
   ];
+
+  bool _isOnTasksPage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +52,34 @@ class _MainPageState extends State<MainPage> {
         animationCurve: Curves.easeInOut,
         animationDuration: const Duration(milliseconds: 300),
         onTap: (index) {
-          if (index == 1) {
-            // Navigate to the TasksPage by changing the page index
-            setState(() {
-              _page = 1;
-            });
+          if (index == 2) {
+            if (_isOnTasksPage) {
+              // Open the custom dialog if user is on TasksPage
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Add Item'),
+                    content: Text('This is where you can add an item on TasksPage.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Close'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              setState(() {
+                _page = index;
+              });
+            }
           } else {
+            // Update the variable based on the selected page
+            _isOnTasksPage = _pages[index] is TasksPage;
             setState(() {
               _page = index;
             });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -10,6 +11,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  List<Map<String, dynamic>> _searchResults = [];
 
   @override
   void dispose() {
@@ -17,13 +19,31 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
-  void _onSearchSubmitted(String value) {
+  void _onSearchSubmitted(String value) async {
     setState(() {
       _searchQuery = value;
-      // Perform your search here with the search query (_searchQuery).
-      // For example, you can filter a list of items based on the query.
-      // searchResults = performSearch(_searchQuery);
     });
+
+    if (_searchQuery.isNotEmpty) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('name', isGreaterThanOrEqualTo: _searchQuery)
+          .where('name', isLessThanOrEqualTo: _searchQuery + '\uf8ff')
+          .get();
+
+      final List<Map<String, dynamic>> results = [];
+      snapshot.docs.forEach((doc) {
+        results.add(doc.data());
+      });
+
+      setState(() {
+        _searchResults = results;
+      });
+    } else {
+      setState(() {
+        _searchResults = [];
+      });
+    }
   }
 
   @override
@@ -38,24 +58,24 @@ class _SearchPageState extends State<SearchPage> {
           child: Stack(
             children: [
               Align(
-                alignment: Alignment.centerLeft, // Align to the left
+                alignment: Alignment.centerLeft,
                 child: Container(
                   height: 40.0,
                   decoration: BoxDecoration(
-                    color: const Color.fromRGBO(25, 25, 25, 0.8), // Grey interior color
+                    color: const Color.fromRGBO(25, 25, 25, 0.8),
                     borderRadius: BorderRadius.circular(25),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SizedBox(width: 10.0),
-                      Icon(Icons.search, color: Colors.white), // Search icon
-                      SizedBox(width: 8.0), // Add some spacing between Icon and Text
+                      Icon(Icons.search, color: Colors.white),
+                      SizedBox(width: 8.0),
                       Expanded(
-                        // Use an expanded widget to make the TextField take up the available space
                         child: TextField(
                           controller: _searchController,
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w300),
                           decoration: InputDecoration(
                             hintText: 'Search',
                             hintStyle: TextStyle(color: Colors.grey[400]),
@@ -78,7 +98,18 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: Container(
         color: Color.fromRGBO(25, 25, 25, 0.8),
-        child: Center(
+        child: _searchResults.isNotEmpty
+            ? ListView.builder(
+          itemCount: _searchResults.length,
+          itemBuilder: (context, index) {
+            final user = _searchResults[index];
+            return ListTile(
+              title: Text(user['name']),
+              // You can customize the list tile as needed
+            );
+          },
+        )
+            : Center(
           child: Text(
             'You can search for your friends to help them with tasks',
             style: TextStyle(fontSize: 20),
