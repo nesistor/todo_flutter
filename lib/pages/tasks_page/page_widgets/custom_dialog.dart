@@ -3,6 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
+import '../tasks_page.dart';
+
 
 class CustomDialog extends StatefulWidget {
   final void Function(String, DateTime) onAddPressed;
@@ -32,29 +34,32 @@ class _CustomDialogState extends State<CustomDialog> {
     'Friend 3',
   ];
 
-  void _showMultiSelect(BuildContext context) async {
-    showModalBottomSheet(
+  Future<void> _showMultiSelectBottomSheet(BuildContext context, VoidCallback onPressedAfterBottomSheet) async {
+    List<String> selectedValues = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (ctx) {
+      builder: (context) {
         return MultiSelectBottomSheet(
           items: friendsOrTeams
               .map((item) => MultiSelectItem<String>(item, item))
               .toList(),
-          initialValue: ['none'], // You can provide an initial value if needed
+          initialValue: ['none'],
           onConfirm: (values) {
-            // Handle selected friends/teams here
             if (values != null) {
               print('Selected Friends/Teams: $values');
-              Navigator.pop(ctx); // Close the bottom sheet
+              Navigator.of(context).pop(); // Dismiss the Bottom Sheet
+              onPressedAfterBottomSheet(); // Call the callback function
             }
           },
           maxChildSize: 0.8,
         );
       },
     );
-  }
 
+    if (selectedValues != null) {
+      // Handle selected values if needed
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -174,26 +179,6 @@ class _CustomDialogState extends State<CustomDialog> {
                   },
                 ),
               ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                _showMultiSelect(context);
-              },
-              child: Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.black),
-                  color: Colors.white,
-                ),
-                child: Center(
-                  child: Text(
-                    'Share To',
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            ),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -214,12 +199,15 @@ class _CustomDialogState extends State<CustomDialog> {
                   ),
                 ),
                 SizedBox(
-                  width: 120, // Set the desired width for both buttons
-                  height: 40, // Set the desired height for both buttons
+                  width: 120,
+                  height: 40,
                   child: TextButton(
-                    onPressed: () {
-                      widget.onAddPressed(newTask, _selectedDay);
+                    onPressed: () async {
+                      await _showMultiSelectBottomSheet(context, () {// Dismiss the CustomDialog
+                        widget.onAddPressed(newTask, _selectedDay);
+                      });
                     },
+
                     style: TextButton.styleFrom(
                       disabledBackgroundColor: Colors.white, // Text color
                       backgroundColor: Colors.indigo.shade900, // Button background color
