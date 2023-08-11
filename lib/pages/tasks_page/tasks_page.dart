@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:todo_flutter/pages/tasks_page/page_widgets/custom_dialog.dart';
 
 class TasksPage extends StatefulWidget {
@@ -23,9 +21,9 @@ class _TasksPageState extends State<TasksPage> {
       context: context,
       builder: (BuildContext context) {
         return CustomDialog(
-          onAddPressed: (String newTask, DateTime selectedDay) async {
+          onAddPressed: (String title, String description, DateTime selectedDay) async {
             setState(() {
-              tasks.add(newTask);
+              tasks.add(title);
               _selectedDay = selectedDay;
             });
             setState(() {

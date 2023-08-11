@@ -3,11 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-import '../tasks_page.dart';
-
-
 class CustomDialog extends StatefulWidget {
-  final void Function(String, DateTime) onAddPressed;
+  final void Function(String, String, DateTime) onAddPressed;
   final VoidCallback onCancelPressed;
   int selectedDayIndex;
 
@@ -23,7 +20,8 @@ class CustomDialog extends StatefulWidget {
 }
 
 class _CustomDialogState extends State<CustomDialog> {
-  String newTask = '';
+  String title = '';
+  String description = '';
   final CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
@@ -40,6 +38,8 @@ class _CustomDialogState extends State<CustomDialog> {
       isScrollControlled: true,
       builder: (context) {
         return MultiSelectBottomSheet(
+          title: const Text("Share task to", style: TextStyle(color: Colors.black),),
+
           items: friendsOrTeams
               .map((item) => MultiSelectItem<String>(item, item))
               .toList(),
@@ -52,6 +52,8 @@ class _CustomDialogState extends State<CustomDialog> {
             }
           },
           maxChildSize: 0.8,
+            selectedColor: Colors.indigo.shade900,
+            checkColor: Colors.black,
         );
       },
     );
@@ -76,7 +78,7 @@ class _CustomDialogState extends State<CustomDialog> {
               child: TextField(
                 onChanged: (value) {
                   setState(() {
-                    newTask = value;
+                    title = value;
                   });
                 },
                 maxLines: null,
@@ -105,7 +107,7 @@ class _CustomDialogState extends State<CustomDialog> {
               child: TextField(
                 onChanged: (value) {
                   setState(() {
-                    newTask = value;
+                    description = value;
                   });
                 },
                 maxLines: null,
@@ -204,7 +206,7 @@ class _CustomDialogState extends State<CustomDialog> {
                   child: TextButton(
                     onPressed: () async {
                       await _showMultiSelectBottomSheet(context, () {// Dismiss the CustomDialog
-                        widget.onAddPressed(newTask, _selectedDay);
+                        widget.onAddPressed(title, description, _selectedDay);
                       });
                     },
 

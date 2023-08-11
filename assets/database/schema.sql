@@ -13,25 +13,16 @@ CREATE TABLE IF NOT EXISTS users (
 
 
 -- Tasks table
-CREATE TABLE IF NOT EXISTS tasks (
+CREATE TABLE tasks (
   id INTEGER PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT,
-  due_date TEXT,
-  is_completed INTEGER DEFAULT 0
+  date TEXT NOT NULL
 );
 
--- Teams table
-CREATE TABLE IF NOT EXISTS teams (
+CREATE TABLE shared_with (
   id INTEGER PRIMARY KEY,
-  name TEXT NOT NULL
-);
-
--- Friends table
-CREATE TABLE IF NOT EXISTS friends (
-  id INTEGER PRIMARY KEY,
-  user_id INTEGER,
-  friend_id INTEGER,
-  FOREIGN KEY (user_id) REFERENCES users (id),
-  FOREIGN KEY (friend_id) REFERENCES users (id)
+  task_id INTEGER NOT NULL,
+  friend_name TEXT NOT NULL,
+  FOREIGN KEY (task_id) REFERENCES tasks (id)
 );
