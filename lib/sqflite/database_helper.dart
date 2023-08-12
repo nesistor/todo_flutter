@@ -21,7 +21,7 @@ class DatabaseHelper {
 
   Future<Database> initDb() async {
     String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'tasks.db');
+    String path = join(databasesPath, 'Todo.db');
 
     var db = await openDatabase(
       path,
@@ -41,6 +41,13 @@ class DatabaseHelper {
             friend_name TEXT NOT NULL,
             FOREIGN KEY (task_id) REFERENCES tasks (id)
           );
+          
+          CREATE TABLE tasksOnSuccesful (
+          id INTEGER PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          date TEXT NOT NULL
+        );
         ''');
       },
     );
@@ -73,6 +80,53 @@ class DatabaseHelper {
     var client = await db;
     var tasks = await client.query('tasks');
     return tasks.map((taskMap) => Task.fromMap(taskMap)).toList();
+  }
+
+  Future<int> updateTask(Task task) async {
+    var client = await db;
+    return await client.update(
+      'tasks',
+      task.toMap(),
+      where: 'id = ?',
+      whereArgs: [task.id],
+    );
+  }
+
+  Future<int> deleteTask(int taskId) async {
+    var client = await db;
+    return await client.delete(
+      'tasks',
+      where: 'id = ?',
+      whereArgs: [taskId],
+    );
+  }
+
+  Future<int> insertTaskOnSuccessful(Task task) async {
+    var client = await db;
+    var taskId = await client.insert(
+      'tasksOnSuccesful',
+      task.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return taskId;
+  }
+
+  Future<void> printTasksPastDeadline() async {
+    final DateTime now = DateTime.now();
+    final List<Task> allTasks = await DatabaseHelper().getAllTasks();
+
+    final List<Task> tasksPastDeadline = allTasks.where((task) => task.date.isBefore(now)).toList();
+
+    print('Tasks past deadline (${tasksPastDeadline.length}):');
+    for (final task in tasksPastDeadline) {
+      print('Title: ${task.title}, Deadline: ${task.date}');
+    }
+  }
+
+  Future<int> countSuccessfulTasks() async {
+    final client = await db;
+    final count = Sqflite.firstIntValue(await client.rawQuery('SELECT COUNT(*) FROM tasksOnSuccesful'));
+    return count ?? 0;
   }
 
 // Add other CRUD operations as needed

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:todo_flutter/pages/settings_page/settings_page.dart';
 import 'package:todo_flutter/pages/user_information_page/user_information_page.dart';
 import 'package:todo_flutter/provider/auth_provider.dart';
 import 'package:todo_flutter/pages/welcome_page/welcome_page.dart';
@@ -94,7 +95,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             SizedBox(height: 10),
                             CustomProfileButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SettingsPage(),
+                                  ),
+                                );
+                              },
                               text: "Settings",
                               icon: const Icon(Icons.settings),
                             ),

@@ -7,12 +7,18 @@ class CustomDialog extends StatefulWidget {
   final void Function(String, String, DateTime) onAddPressed;
   final VoidCallback onCancelPressed;
   int selectedDayIndex;
+  final String? initialTitle;
+  final String? initialDescription;
+  final DateTime? initialSelectedDay;
 
   CustomDialog({
     Key? key,
     required this.onAddPressed,
     required this.onCancelPressed,
     required this.selectedDayIndex,
+    this.initialTitle,
+    this.initialDescription,
+    this.initialSelectedDay,
   }) : super(key: key);
 
   @override
@@ -31,6 +37,23 @@ class _CustomDialogState extends State<CustomDialog> {
     'Friend 2',
     'Friend 3',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Wypełnij pola jeśli dostarczono wartości inicjalizujące
+    if (widget.initialTitle != null) {
+      title = widget.initialTitle!;
+    }
+    if (widget.initialDescription != null) {
+      description = widget.initialDescription!;
+    }
+    if (widget.initialSelectedDay != null) {
+      _selectedDay = widget.initialSelectedDay!;
+      _focusedDay = widget.initialSelectedDay!;
+    }
+  }
 
   Future<void> _showMultiSelectBottomSheet(BuildContext context, VoidCallback onPressedAfterBottomSheet) async {
     List<String> selectedValues = await showModalBottomSheet(

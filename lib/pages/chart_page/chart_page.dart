@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+class ChartPage extends StatefulWidget {
+  const ChartPage({super.key});
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  _ChartPageState createState() => _ChartPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChartPageState extends State<ChartPage> {
   @override
 
   @override

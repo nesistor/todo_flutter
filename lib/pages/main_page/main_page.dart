@@ -6,7 +6,7 @@ import 'package:todo_flutter/pages/article_page/article_page.dart';
 import 'package:todo_flutter/pages/search_page/search_page.dart';
 import 'package:todo_flutter/pages/profile_page/profile_page.dart';
 import 'package:todo_flutter/pages/tasks_page/tasks_page.dart';
-import 'package:todo_flutter/pages/chat_page/chat_page.dart';
+import 'package:todo_flutter/pages/chart_page/chart_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [
     const SearchPage(),
-    const ChatPage(),
+    const ChartPage(),
     const TasksPage(),
     ArticlesPage(), // Include your ArticlesPage here
     const ProfilePage(),

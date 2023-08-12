@@ -4,6 +4,8 @@ import 'package:todo_flutter/pages/tasks_page/page_widgets/custom_dialog.dart';
 import 'package:todo_flutter/model/task_model.dart';
 import 'package:todo_flutter/sqflite/database_helper.dart';
 
+import '../../utils/utils.dart';
+
 class TasksPage extends StatefulWidget {
   const TasksPage({Key? key}) : super(key: key);
 
@@ -70,6 +72,49 @@ class _TasksPageState extends State<TasksPage> {
     );
   }
 
+  void _showEditDialog(Task task) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          onAddPressed: (String title, String description, DateTime selectedDay) async {
+            Task updatedTask = Task(
+              id: task.id,
+              title: title,
+              description: description,
+              date: selectedDay,
+            );
+
+            await DatabaseHelper().updateTask(updatedTask);
+
+            setState(() {
+              int taskIndex = tasks.indexWhere((element) => element.id == task.id);
+
+              if (taskIndex != -1) {
+                tasks[taskIndex] = updatedTask;
+              }
+            });
+
+          },
+          onCancelPressed: () {
+            Navigator.of(context).pop();
+          },
+          initialTitle: task.title,
+          initialDescription: task.description,
+          initialSelectedDay: task.date,
+          selectedDayIndex: task.date.weekday - 1,
+        );
+      },
+    );
+  }
+
+  void _onSuccessfulTask(Task task) async {
+    await DatabaseHelper().insertTaskOnSuccessful(task);
+    setState(() {
+      tasks.remove(task);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,35 +158,77 @@ class _TasksPageState extends State<TasksPage> {
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.black, // Set the background color of the article to black
-                                border: Border.all(color: Colors.indigo.shade900, width: 2), // Add a blue border around the article
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: ListTile(
-                                title: Text(
-                                  tasks[index].title,
-                                  style: const TextStyle(color: Colors.white),
+                            child: Dismissible(
+                              key: Key(tasks[index].id.toString()),
+                              direction: DismissDirection.horizontal, // Swipe both ways
+                              background: Container(
+                                alignment: Alignment.centerLeft,
+                                color: Colors.green, // Background color when swiping right
+                                child: const Padding(
+                                  padding: EdgeInsets.only(right: 16.0),
+                                  child: Icon(Icons.check, color: Colors.white),
                                 ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      tasks[index].description,
-                                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                                    ),
-                                    Text(
-                                      'Date: ${DateFormat('dd-MM-yyyy').format(tasks[index].date)}', // Format date as needed
-                                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                                    ),
-                                  ],
+                              ),
+                              secondaryBackground: Container(
+                                alignment: Alignment.centerRight,
+                                color: Colors.red, // Background color when swiping left
+                                child: const Padding(
+                                  padding: EdgeInsets.only(left: 16.0),
+                                  child: Icon(Icons.delete, color: Colors.white),
+                                ),
+                              ),
+                              onDismissed: (direction) {
+                                if (direction == DismissDirection.startToEnd) {
+                                  _onSuccessfulTask(tasks[index]);
+                                  showSnackBar(context, "Congratulations that you were able to complete the task");
+                                  DatabaseHelper().deleteTask(tasks[index].id);
+                                  setState(() {
+                                    tasks.removeAt(index);
+                                  });
+                                } else if (direction == DismissDirection.endToStart) {
+                                  DatabaseHelper().deleteTask(tasks[index].id);
+                                  setState(() {
+                                    tasks.removeAt(index);
+                                  });
+                                  showSnackBar(context, "Task deleted successfully");
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  border: Border.all(color: Colors.indigo.shade900, width: 2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: ListTile(
+                                  title: Text(
+                                    tasks[index].title,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        tasks[index].description,
+                                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                                      ),
+                                      Text(
+                                        'Date: ${DateFormat('dd-MM-yyyy').format(tasks[index].date)}',
+                                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.edit, color: Colors.white, size: 12),
+                                    onPressed: () {
+                                      _showEditDialog(tasks[index]);
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
                           );
                         },
-                      )
+                      ),
                     ),
                   ),
                 ),
