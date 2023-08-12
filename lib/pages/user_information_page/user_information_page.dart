@@ -42,6 +42,10 @@ class _UserInformationPageState extends State<UserInformationPage> {
     final isLoading =
         Provider.of<AuthProvider>(context, listen: true).isLoading;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: const Text('User Information'),
+      ),
       body: SafeArea(
         child: isLoading == true
             ? const Center(

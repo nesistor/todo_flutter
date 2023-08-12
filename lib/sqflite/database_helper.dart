@@ -111,17 +111,21 @@ class DatabaseHelper {
     return taskId;
   }
 
-  Future<void> printTasksPastDeadline() async {
-    final DateTime now = DateTime.now();
-    final List<Task> allTasks = await DatabaseHelper().getAllTasks();
+  Future<int> countIncompleteTasks() async {
+    final client = await db;
+    final now = DateTime.now();
+    final yesterday = now.subtract(Duration(days: 1));
 
-    final List<Task> tasksPastDeadline = allTasks.where((task) => task.date.isBefore(now)).toList();
+    final count = Sqflite.firstIntValue(await client.rawQuery('''
+    SELECT COUNT(*) 
+    FROM tasks 
+    WHERE date <= ? AND date >= ? 
+      AND id NOT IN (SELECT task_id FROM tasksOnSuccesful)
+  ''', [yesterday.toIso8601String(), yesterday.toIso8601String()]));
 
-    print('Tasks past deadline (${tasksPastDeadline.length}):');
-    for (final task in tasksPastDeadline) {
-      print('Title: ${task.title}, Deadline: ${task.date}');
-    }
+    return count ?? 0;
   }
+
 
   Future<int> countSuccessfulTasks() async {
     final client = await db;

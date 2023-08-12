@@ -5,7 +5,9 @@ import 'package:todo_flutter/pages/user_information_page/user_information_page.d
 import 'package:todo_flutter/provider/auth_provider.dart';
 import 'package:todo_flutter/pages/welcome_page/welcome_page.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_flutter/pages/profile_page/page_widgets/custom_button.dart';
+import 'package:todo_flutter/custom_widgets/custom_black_button.dart';
+
+import 'package:todo_flutter/pages/feedback_page/feedback_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,7 +18,7 @@ class ProfilePage extends StatefulWidget {
 
 void signOutAndNavigateToWelcomePage(BuildContext context) {
   final authProvider = Provider.of<AuthProvider>(context,
-      listen: false); // Replace this with your actual AuthProvider instance
+      listen: false);
 
   authProvider.userSignOut().then(
         (value) => Navigator.push(
@@ -27,8 +29,6 @@ void signOutAndNavigateToWelcomePage(BuildContext context) {
     ),
   );
 }
-
-// ... existing code
 
 class _ProfilePageState extends State<ProfilePage> {
   @override
@@ -58,20 +58,20 @@ class _ProfilePageState extends State<ProfilePage> {
             delegate: SliverChildListDelegate(
               [
                 Transform.translate(
-                  offset: Offset(0, -120), // Move the content up
+                  offset: const Offset(0, -120), // Move the content up
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: 120), // Space for the background image
+                      const SizedBox(height: 120), // Space for the background image
                       CircleAvatar(
                         radius: 70,
                         backgroundImage:
                         NetworkImage(authProvider.userModel.profilePic),
                       ),
-                      SizedBox(height: 60),
+                      const SizedBox(height: 60),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -87,13 +87,20 @@ class _ProfilePageState extends State<ProfilePage> {
                               text: "Profile",
                               icon: const Icon(Icons.person),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             CustomProfileButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const FeedbackPage(),
+                                  ),
+                                );
+                              },
                               text: "Feedback",
                               icon: const Icon(Icons.chat_bubble_outline_rounded),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             CustomProfileButton(
                               onPressed: () {
                                 Navigator.push(
@@ -106,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               text: "Settings",
                               icon: const Icon(Icons.settings),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             CustomProfileButton(
                               onPressed: () {
                                 signOutAndNavigateToWelcomePage(context);
@@ -128,13 +135,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-
-
-
-/*Text(authProvider.userModel.name),
-                  Text(authProvider.userModel.phoneNumber),
-                  Text(authProvider.userModel.email),
-                  Text(authProvider.userModel.bio),
-                  CustomProfileButton(onPressed: signOutAndNavigateToWelcomePage(), text: Text("Sign out"), icon: Icons.exit_to_app)
-                  SizedBox(height: 16),*/

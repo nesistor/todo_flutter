@@ -81,6 +81,7 @@ flutter:
     - assets/icons/jellyfish1.png
     - assets/database/schema.sql
     - assets/icons/stats1.png
+    - assets/database/Todo.db
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -16,10 +16,10 @@ class ArticlesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Articles'),
+        title: const Text('Robocop'),
       ),
       body: Container(
-        color: Color.fromRGBO(25, 25, 25, 0.8), // Set the background color of the entire page to black
+        color: const Color.fromRGBO(25, 25, 25, 0.8), // Set the background color of the entire page to black
         child: ListView.builder(
           itemCount: _articles.length,
           itemBuilder: (context, index) {
