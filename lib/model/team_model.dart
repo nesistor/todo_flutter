@@ -1,7 +1,7 @@
 class Team {
   String id;
   String name;
-  List<String> members; // Lista identyfikatorów uczestników zespołu
+  List<String> members; // Lista identyfikatorów uczestników zespołu UUID
 
   Team({required this.id, required this.name, required this.members});
 }
