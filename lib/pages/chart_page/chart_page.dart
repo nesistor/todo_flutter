@@ -13,6 +13,7 @@ class ChartPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text('Progress'),
+        centerTitle: true,
       ),
       body: Container(
         color: Color.fromRGBO(25, 25, 25, 0.8),
@@ -44,10 +45,9 @@ class ChartPage extends StatelessWidget {
 
     // Clear the list and add new sectors
     sectors.clear();
-    sectors.add(Sector(incompleteTasks.toDouble(), Colors.red));
-    sectors.add(Sector(successfulTasks.toDouble(), Colors.green));
+    sectors.add(Sector(incompleteTasks.toDouble(), Colors.red, 'Incomplete Tasks')); // Kolor czerwony dla nieukończonych zadań
+    sectors.add(Sector(successfulTasks.toDouble(), Colors.green, 'Successful Tasks')); // Kolor zielony dla ukończonych zadań
   }
-
   List<PieChartSectionData> _chartSections(List<Sector> sectors) {
     final List<PieChartSectionData> list = [];
     for (var sector in sectors) {
@@ -56,7 +56,7 @@ class ChartPage extends StatelessWidget {
         color: sector.color,
         value: sector.value,
         radius: radius,
-        title: '',
+        title: sector.description, // Ustaw opis sektora jako tytuł
       );
       list.add(data);
     }
@@ -67,6 +67,7 @@ class ChartPage extends StatelessWidget {
 class Sector {
   final double value;
   final Color color;
+  final String description; // Dodaj pole na opis sektora
 
-  Sector(this.value, this.color);
+  Sector(this.value, this.color, this.description);
 }

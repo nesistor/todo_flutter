@@ -4,7 +4,7 @@ import 'package:todo_flutter/pages/tasks_page/page_widgets/custom_dialog.dart';
 import 'package:todo_flutter/model/task_model.dart';
 import 'package:todo_flutter/sqflite/database_helper.dart';
 
-import '../../utils/utils.dart';
+import 'package:todo_flutter/utils/utils.dart';
 
 class TasksPage extends StatefulWidget {
   const TasksPage({Key? key}) : super(key: key);

@@ -106,10 +106,10 @@ class DatabaseHelper {
       whereArgs: [taskId],
     );
   }
-  // Zliczanie tasków
+  // Zliczanie ukończonych tasków
   Future<int> countAllTasksComplete() async {
     var client = await db;
-    var result = await client.rawQuery('SELECT COUNT(*) FROM tasks');
+    var result = await client.rawQuery('SELECT COUNT(*) FROM tasks WHERE success = ?', [true]);
     int count = Sqflite.firstIntValue(result) ?? 0;
     return count;
   }
@@ -120,8 +120,21 @@ class DatabaseHelper {
     DateTime now = DateTime.now();
     DateTime yesterday = now.subtract(Duration(days: 1));
     var result = await client.rawQuery(
-        'SELECT COUNT(*) FROM tasks WHERE success = 0 AND date >= ?',
-        [DateFormat('yyyy-MM-dd').format(yesterday)]);
+      'SELECT COUNT(*) FROM tasks WHERE success = ? AND date <= ?',
+      [0, DateFormat('yyyy-MM-dd').format(yesterday)],
+    );
+    int count = Sqflite.firstIntValue(result) ?? 0;
+    return count;
+  }
+
+  // Zliczanie wszystki tasków które nie są ukończone ale nie są po terminie
+  Future<int> countAllTasks() async {
+    var client = await db;
+    DateTime now = DateTime.now();
+    var result = await client.rawQuery(
+      'SELECT COUNT(*) FROM tasks WHERE date >= ? AND success = ?',
+      [DateFormat('yyyy-MM-dd').format(now), 0],
+    );
     int count = Sqflite.firstIntValue(result) ?? 0;
     return count;
   }
