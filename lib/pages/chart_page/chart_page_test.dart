@@ -77,7 +77,7 @@ class PieChartSampleState extends State {
           return PieChartSectionData(
             color: Colors.green,
             value: successfulTasks.toDouble(),
-            title: '$successfulTasks%',
+            title: '$successfulTasks Tasks',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -86,7 +86,7 @@ class PieChartSampleState extends State {
               shadows: shadows,
             ),
             badgeWidget: _Badge(
-              'assets/icons/ophthalmology-svgrepo-com.svg',
+              'assets/icons/complete.svg',
               size: widgetSize,
               borderColor: Colors.black,
             ),
@@ -94,9 +94,9 @@ class PieChartSampleState extends State {
           );
         case 1:
           return PieChartSectionData(
-            color: Colors.red,
+            color: Colors.deepOrange,
             value: incompleteTasks.toDouble(),
-            title: '$incompleteTasks%',
+            title: '$incompleteTasks Tasks',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -105,7 +105,7 @@ class PieChartSampleState extends State {
               shadows: shadows,
             ),
             badgeWidget: _Badge(
-              'assets/icons/librarian-svgrepo-com.svg',
+              'assets/icons/incomplete.svg',
               size: widgetSize,
               borderColor: Colors.black,
             ),
@@ -113,9 +113,9 @@ class PieChartSampleState extends State {
           );
         case 2: // Add this section for all tasks
           return PieChartSectionData(
-            color: Colors.blue, // You can change the color
+            color: Colors.indigo.shade900, // You can change the color
             value: totalTasks.toDouble(),
-            title: '$totalTasks%', // Show the total count
+            title: '$totalTasks Tasks', // Show the total count
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -124,7 +124,7 @@ class PieChartSampleState extends State {
               shadows: shadows,
             ),
             badgeWidget: _Badge(
-              'assets/icons/all_tasks_icon.svg', // Replace with the actual icon asset
+              'assets/icons/in_progress.svg', // Replace with the actual icon asset
               size: widgetSize,
               borderColor: Colors.black,
             ),
@@ -166,7 +166,7 @@ class _Badge extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black,
         shape: BoxShape.circle,
         border: Border.all(
           color: borderColor,

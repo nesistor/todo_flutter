@@ -82,6 +82,9 @@ flutter:
     - assets/database/schema.sql
     - assets/icons/stats1.png
     - assets/database/Todo.db
+    - assets/icons/in_progress.svg
+    - assets/icons/incomplete.svg
+    - assets/icons/complete.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

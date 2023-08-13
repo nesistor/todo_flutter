@@ -16,7 +16,9 @@ class ArticlesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Robocop'),
+        title: const Text('Robocop',
+            style: TextStyle(fontSize: 24, color: Colors.white)),
+        centerTitle: true,
       ),
       body: Container(
         color: const Color.fromRGBO(25, 25, 25, 0.8), // Set the background color of the entire page to black

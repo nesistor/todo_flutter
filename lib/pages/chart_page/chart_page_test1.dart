@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'chart_page_test.dart';
-// Adjust the import path based on your project structure
 
 class ProgressPage extends StatelessWidget {
   @override
@@ -9,7 +8,8 @@ class ProgressPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Progress Page'),
+        title: const Text('Progress',
+          style: TextStyle(fontSize: 24, color: Colors.white)),
         centerTitle: true,
       ),
       body: const Column(
