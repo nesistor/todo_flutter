@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:todo_flutter/sqflite/database_helper.dart'; // Make sure to import the correct path to your DatabaseHelper
+import 'package:todo_flutter/sqflite/database_helper.dart';
 
 class ChartPage extends StatelessWidget {
   final List<Sector> sectors = []; // We'll populate this list with data from the database
@@ -39,8 +39,8 @@ class ChartPage extends StatelessWidget {
   }
 
   Future<void> _fetchData() async {
-    final int incompleteTasks = await DatabaseHelper().countIncompleteTasks();
-    final int successfulTasks = await DatabaseHelper().countSuccessfulTasks();
+    final int incompleteTasks = await DatabaseHelper().countIncompleteTasksFromYesterday();
+    final int successfulTasks = await DatabaseHelper().countAllTasksComplete();
 
     // Clear the list and add new sectors
     sectors.clear();

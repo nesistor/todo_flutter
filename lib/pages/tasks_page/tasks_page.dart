@@ -51,6 +51,7 @@ class _TasksPageState extends State<TasksPage> {
               title: title,
               description: description,
               date: selectedDay,
+              insuccess: false
             );
 
             int taskId = await DatabaseHelper().insertTask(newTask); // Insert the task into the database
@@ -83,6 +84,7 @@ class _TasksPageState extends State<TasksPage> {
               title: title,
               description: description,
               date: selectedDay,
+              insuccess: false
             );
 
             await DatabaseHelper().updateTask(updatedTask);
@@ -106,13 +108,6 @@ class _TasksPageState extends State<TasksPage> {
         );
       },
     );
-  }
-
-  void _onSuccessfulTask(Task task) async {
-    await DatabaseHelper().insertTaskOnSuccessful(task);
-    setState(() {
-      tasks.remove(task);
-    });
   }
 
   @override
@@ -154,13 +149,14 @@ class _TasksPageState extends State<TasksPage> {
                       child: tasks.isEmpty
                           ? null
                           : ListView.builder(
-                        itemCount: tasks.length,
+                        itemCount: tasks.where((task) => !task.insuccess).length,
                         itemBuilder: (context, index) {
+                          final filteredTasks = tasks.where((task) => !task.insuccess).toList();
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Dismissible(
-                              key: Key(tasks[index].id.toString()),
-                              direction: DismissDirection.horizontal, // Swipe both ways
+                              key: Key(filteredTasks[index].id.toString()),
+                              direction: DismissDirection.horizontal,
                               background: Container(
                                 alignment: Alignment.centerLeft,
                                 color: Colors.green, // Background color when swiping right
@@ -177,22 +173,26 @@ class _TasksPageState extends State<TasksPage> {
                                   child: Icon(Icons.delete, color: Colors.white),
                                 ),
                               ),
-                              onDismissed: (direction) {
-                                if (direction == DismissDirection.startToEnd) {
-                                  _onSuccessfulTask(tasks[index]);
-                                  showSnackBar(context, "Congratulations that you were able to complete the task");
-                                  DatabaseHelper().deleteTask(tasks[index].id);
+                              onDismissed: (direction) async {
+                                try {
+                                  if (direction == DismissDirection.startToEnd) {
+                                    await DatabaseHelper().markTaskAsInSuccess(filteredTasks[index].id);
+                                    showSnackBar(context, "Task done successfully");
+                                  } else if (direction == DismissDirection.endToStart) {
+                                    await DatabaseHelper().deleteTask(filteredTasks[index].id);
+                                    showSnackBar(context, "Task deleted successfully");
+                                  }
+
                                   setState(() {
-                                    tasks.removeAt(index);
+                                    tasks.removeWhere((task) => task.id == filteredTasks[index].id);
+                                    filteredTasks.removeAt(index);
                                   });
-                                } else if (direction == DismissDirection.endToStart) {
-                                  DatabaseHelper().deleteTask(tasks[index].id);
-                                  setState(() {
-                                    tasks.removeAt(index);
-                                  });
-                                  showSnackBar(context, "Task deleted successfully");
+                                } catch (e) {
+                                  print("Error in onDismissed: $e");
                                 }
                               },
+
+
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.black,

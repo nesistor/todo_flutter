@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:todo_flutter/model/task_model.dart';
@@ -25,16 +26,16 @@ class DatabaseHelper {
 
     var db = await openDatabase(
       path,
-      version: 1,
+      version: 3,
       onCreate: (Database db, int version) async {
         await db.execute('''
           CREATE TABLE tasks (
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
             description TEXT,
-            date TEXT NOT NULL
+            date TEXT NOT NULL,
+            success BOOLEAN NOT NULL DEFAULT false
           );
-
           CREATE TABLE shared_with (
             id INTEGER PRIMARY KEY,
             task_id INTEGER NOT NULL,
@@ -42,12 +43,6 @@ class DatabaseHelper {
             FOREIGN KEY (task_id) REFERENCES tasks (id)
           );
           
-          CREATE TABLE tasksOnSuccesful (
-          id INTEGER PRIMARY KEY,
-          title TEXT NOT NULL,
-          description TEXT,
-          date TEXT NOT NULL
-        );
         ''');
       },
     );
@@ -101,37 +96,34 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> insertTaskOnSuccessful(Task task) async {
+  // Dodanie true do pola insucces w tasku
+  Future<int> markTaskAsInSuccess(int taskId) async {
     var client = await db;
-    var taskId = await client.insert(
-      'tasksOnSuccesful',
-      task.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+    return await client.update(
+      'tasks',
+      {'success': true},
+      where: 'id = ?',
+      whereArgs: [taskId],
     );
-    return taskId;
+  }
+  // Zliczanie tasków
+  Future<int> countAllTasksComplete() async {
+    var client = await db;
+    var result = await client.rawQuery('SELECT COUNT(*) FROM tasks');
+    int count = Sqflite.firstIntValue(result) ?? 0;
+    return count;
   }
 
-  Future<int> countIncompleteTasks() async {
-    final client = await db;
-    final now = DateTime.now();
-    final yesterday = now.subtract(Duration(days: 1));
-
-    final count = Sqflite.firstIntValue(await client.rawQuery('''
-    SELECT COUNT(*) 
-    FROM tasks 
-    WHERE date <= ? AND date >= ? 
-      AND id NOT IN (SELECT task_id FROM tasksOnSuccesful)
-  ''', [yesterday.toIso8601String(), yesterday.toIso8601String()]));
-
-    return count ?? 0;
+// Zliczanie tasków nieukończonych licząc od wczorajszego dnia
+  Future<int> countIncompleteTasksFromYesterday() async {
+    var client = await db;
+    DateTime now = DateTime.now();
+    DateTime yesterday = now.subtract(Duration(days: 1));
+    var result = await client.rawQuery(
+        'SELECT COUNT(*) FROM tasks WHERE success = 0 AND date >= ?',
+        [DateFormat('yyyy-MM-dd').format(yesterday)]);
+    int count = Sqflite.firstIntValue(result) ?? 0;
+    return count;
   }
 
-
-  Future<int> countSuccessfulTasks() async {
-    final client = await db;
-    final count = Sqflite.firstIntValue(await client.rawQuery('SELECT COUNT(*) FROM tasksOnSuccesful'));
-    return count ?? 0;
-  }
-
-// Add other CRUD operations as needed
 }

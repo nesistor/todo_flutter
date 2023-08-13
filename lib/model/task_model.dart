@@ -3,12 +3,14 @@ class Task {
   final String title;
   final String description;
   final DateTime date;
+  final bool insuccess;
 
   Task({
     required this.id,
     required this.title,
     required this.description,
     required this.date,
+    required this.insuccess
   });
 
   Task copyWith({
@@ -16,12 +18,14 @@ class Task {
     String? title,
     String? description,
     DateTime? date,
+    bool? insuccess,
   }) {
     return Task(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       date: date ?? this.date,
+      insuccess: insuccess ?? this.insuccess
     );
   }
 
@@ -31,6 +35,7 @@ class Task {
       title: map['title'],
       description: map['description'],
       date: DateTime.parse(map['date']),
+      insuccess: map['insuccess'],
     );
   }
 
